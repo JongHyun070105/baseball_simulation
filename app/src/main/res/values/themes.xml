@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Theme.Baseball_simulation_app" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.Baseball_simulation_app" parent="Theme.AppCompat.Light.NoActionBar" >
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>

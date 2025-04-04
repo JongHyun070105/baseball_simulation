@@ -1,3 +1,21 @@
 <resources>
-    <string name="app_name">baseball_simulation_app</string>
+    <string name="app_name">BaseballApp</string>
+
+    <!-- 팀 이름 배열 -->
+    <string-array name="teamNames">
+        <item>선호구단 선택</item>
+        <item>LG</item>
+        <item>KT</item>
+        <item>두산</item>
+        <item>키움</item>
+        <item>삼성</item>
+        <item>롯데</item>
+        <item>SSG</item>
+        <item>NC</item>
+        <item>한화</item>
+        <item>기아</item>
+    </string-array>
+    <string name="prompt_select_team">선호구단 선택</string>
+    <string name="home_team_logo">Home Team Logo</string>
+    <string name="away_team_logo">Away Team Logo</string>
 </resources>

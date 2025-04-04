@@ -1,4 +1,4 @@
-package com.example.baseball_simulation_app.ui.theme
+package values
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

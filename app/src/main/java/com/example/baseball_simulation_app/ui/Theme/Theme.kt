@@ -1,6 +1,5 @@
-package com.example.baseball_simulation_app.ui.theme
+package values
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
