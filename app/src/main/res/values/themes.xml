@@ -1,7 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="Theme.Baseball_simulation_app" parent="Theme.AppCompat.Light.NoActionBar" >
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
+<resources xmlns:tools="http://schemas.android.com/tools">
+<!-- Base application theme. -->
+<style name="Theme.WhatIfBaseball" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <item name="android:windowIsTranslucent">true</item>
+    <!-- Primary brand color. -->
+    <item name="colorPrimary">@color/main_blue</item>
+    <item name="colorPrimaryVariant">@color/main_blue</item>
+    <item name="colorOnPrimary">@color/white</item>
+    <!-- Secondary brand color. -->
+    <item name="colorSecondary">@color/main_red</item>
+    <item name="colorSecondaryVariant">@color/main_red</item>
+    <item name="colorOnSecondary">@color/white</item>
+    <!-- Status bar color. -->
+    <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+    <!-- Customize your theme here. -->
+</style>
 </resources>

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
+    id ("kotlin-parcelize")
 }
 
 android {
@@ -62,6 +63,8 @@ dependencies {
     implementation(libs.androidx.activity)
 
     implementation (libs.glide)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     ksp (libs.androidx.room.compiler)
     ksp (libs.hilt.compiler)
 
