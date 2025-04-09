@@ -21,7 +21,6 @@ import java.util.Calendar
 import java.util.Date
 
 class DailyGamesFragment : Fragment() {
-
     private var _binding: FragmentDailyGamesBinding? = null
     private val binding get() = _binding!!
 
@@ -31,11 +30,13 @@ class DailyGamesFragment : Fragment() {
 
     companion object {
         private const val ARG_DATE = "date"
+        private const val ARG_CODE = "code"
 
-        fun newInstance(date: Date): DailyGamesFragment {
+        fun newInstance(date: Date, code: String): DailyGamesFragment {
             val fragment = DailyGamesFragment()
             val args = Bundle()
             args.putSerializable(ARG_DATE, date)
+            args.putString(ARG_CODE, code)
             fragment.arguments = args
             return fragment
         }
@@ -163,4 +164,6 @@ class DailyGamesFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+
 }

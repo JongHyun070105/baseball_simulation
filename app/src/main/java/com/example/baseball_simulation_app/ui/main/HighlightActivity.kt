@@ -1,29 +1,34 @@
 package com.example.baseball_simulation_app.ui.main
 
+import android.content.Intent
 import android.os.Bundle
-import android.view.View
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import android.view.LayoutInflater
-import android.view.ViewGroup
+import com.example.baseball_simulation_app.R
+import com.example.baseball_simulation_app.databinding.ActivityHighlightBinding
 import com.example.baseball_simulation_app.databinding.ItemHighlightBinding
 import com.example.baseball_simulation_app.data.model.HighlightData
 import com.example.baseball_simulation_app.data.model.BaseStatus
-import com.example.baseball_simulation_app.databinding.ActivityHighlightBinding
 
 class HighlightActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHighlightBinding
     private var teamId: String = ""
+    private var isHomeTeam: Boolean = true
+    private var gameId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHighlightBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Get teamId from intent
+        // 인텐트에서 값 받아오기
         teamId = intent.getStringExtra(EXTRA_TEAM_ID) ?: ""
+        isHomeTeam = intent.getBooleanExtra(EXTRA_IS_HOME_TEAM, true)
+        gameId = intent.getStringExtra(EXTRA_GAME_ID) ?: ""
 
         setupRecyclerView()
         setupBackButton()
@@ -32,50 +37,82 @@ class HighlightActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         binding.rvHighlights.apply {
             layoutManager = LinearLayoutManager(this@HighlightActivity)
-            adapter = HighlightAdapter(getHighlightDataForTeam(teamId))
+            adapter = HighlightAdapter(
+                getDummyHighlightData(gameId, teamId, isHomeTeam),
+                teamId,
+                isHomeTeam,
+                gameId
+            )
         }
     }
 
     private fun setupBackButton() {
         binding.btnBack.setOnClickListener {
-            finish()  // Close the activity instead of popping back stack
+            finish()
+            overridePendingTransition(
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
         }
     }
 
-    private fun getHighlightDataForTeam(teamId: String): List<HighlightData> {
-        // In a real implementation, this would fetch highlight data based on teamId
-        // For now, return example data
-        return listOf(
-            HighlightData(
-                inning = "5회초",
-                homeTeamName = "엘지",
-                homeTeamScore = 3,
-                homeTeamLogoRes = getLogoResIdForTeam(teamId),
-                awayTeamName = "KT",
-                awayTeamScore = 1,
-                awayTeamLogoRes = getLogoResIdForOpponent(teamId),
-                batterName = "김현수",
-                pitcherName = "고영표",
-                baseStatus = BaseStatus(first = true, second = false, third = false),
-                outCount = 1
+    private fun getDummyHighlightData(gameId: String, teamId: String, isHomeTeam: Boolean): List<HighlightData> {
+        return if (isHomeTeam) {
+            listOf(
+                HighlightData(
+                    inning = "5회초",
+                    homeTeamName = "KT",
+                    homeTeamLogoRes = getLogoResIdForTeam(teamId),
+                    awayTeamName = "LG",
+                    awayTeamLogoRes = getLogoResIdForOpponent(teamId),
+                    batterName = "강백호",
+                    pitcherName = "고우석",
+                    baseStatus = BaseStatus(first = true, second = false, third = true),
+                    outCount = 1
+                ),
+                HighlightData(
+                    inning = "7회초",
+                    homeTeamName = "KT",
+                    homeTeamLogoRes = getLogoResIdForTeam(teamId),
+                    awayTeamName = "LG",
+                    awayTeamLogoRes = getLogoResIdForOpponent(teamId),
+                    batterName = "알포드",
+                    pitcherName = "정우영",
+                    baseStatus = BaseStatus(first = false, second = false, third = true),
+                    outCount = 2
+                )
             )
-        )
+        } else {
+            listOf(
+                HighlightData(
+                    inning = "5회말",
+                    homeTeamName = "KT",
+                    homeTeamLogoRes = getLogoResIdForOpponent(teamId),
+                    awayTeamName = "LG",
+                    awayTeamLogoRes = getLogoResIdForTeam(teamId),
+                    batterName = "김현수",
+                    pitcherName = "벤자민",
+                    baseStatus = BaseStatus(first = false, second = true, third = false),
+                    outCount = 0
+                )
+            )
+        }
     }
 
-    // Get logo resource based on teamId (placeholder implementation)
     private fun getLogoResIdForTeam(teamId: String): Int {
-        // Replace with actual logic
-        return com.example.baseball_simulation_app.R.drawable.placeholder_logo
+        return R.drawable.placeholder_logo
     }
 
     private fun getLogoResIdForOpponent(teamId: String): Int {
-        // Replace with actual logic
-        return com.example.baseball_simulation_app.R.drawable.placeholder_logo
+        return R.drawable.placeholder_logo
     }
 
-    // Adapter implementation
-    inner class HighlightAdapter(private val highlights: List<HighlightData>) :
-        RecyclerView.Adapter<HighlightAdapter.HighlightViewHolder>() {
+    inner class HighlightAdapter(
+        private val highlights: List<HighlightData>,
+        private val teamId: String,
+        private val isHomeTeam: Boolean,
+        private val gameId: String
+    ) : RecyclerView.Adapter<HighlightAdapter.HighlightViewHolder>() {
 
         inner class HighlightViewHolder(private val binding: ItemHighlightBinding) :
             RecyclerView.ViewHolder(binding.root) {
@@ -84,43 +121,56 @@ class HighlightActivity : AppCompatActivity() {
                 binding.apply {
                     tvInning.text = highlight.inning
                     tvHomeTeamName.text = highlight.homeTeamName
-                    tvHomeScore.text = highlight.homeTeamScore.toString()
                     ivHomeTeamLogo.setImageResource(highlight.homeTeamLogoRes)
 
                     tvAwayTeamName.text = highlight.awayTeamName
-                    tvAwayScore.text = highlight.awayTeamScore.toString()
                     ivAwayTeamLogo.setImageResource(highlight.awayTeamLogoRes)
 
                     tvHomePlayerInfo.text = highlight.batterName
                     tvAwayPlayerInfo.text = highlight.pitcherName
 
-                    // Set base status
                     ivFirstBase.setBackgroundResource(
-                        if (highlight.baseStatus.first) com.example.baseball_simulation_app.R.drawable.base_fill
-                        else com.example.baseball_simulation_app.R.drawable.base_empty
+                        if (highlight.baseStatus.first) R.drawable.base_fill
+                        else R.drawable.base_empty
                     )
                     ivSecondBase.setBackgroundResource(
-                        if (highlight.baseStatus.second) com.example.baseball_simulation_app.R.drawable.base_fill
-                        else com.example.baseball_simulation_app.R.drawable.base_empty
+                        if (highlight.baseStatus.second) R.drawable.base_fill
+                        else R.drawable.base_empty
                     )
                     ivThirdBase.setBackgroundResource(
-                        if (highlight.baseStatus.third) com.example.baseball_simulation_app.R.drawable.base_fill
-                        else com.example.baseball_simulation_app.R.drawable.base_empty
+                        if (highlight.baseStatus.third) R.drawable.base_fill
+                        else R.drawable.base_empty
                     )
 
-                    // Set out count
                     when (highlight.outCount) {
                         0 -> {
-                            ivOut1.setBackgroundResource(com.example.baseball_simulation_app.R.drawable.out_empty)
-                            ivOut2.setBackgroundResource(com.example.baseball_simulation_app.R.drawable.out_empty)
+                            ivOut1.setBackgroundResource(R.drawable.out_empty)
+                            ivOut2.setBackgroundResource(R.drawable.out_empty)
                         }
                         1 -> {
-                            ivOut1.setBackgroundResource(com.example.baseball_simulation_app.R.drawable.out_fill)
-                            ivOut2.setBackgroundResource(com.example.baseball_simulation_app.R.drawable.out_empty)
+                            ivOut1.setBackgroundResource(R.drawable.out_fill)
+                            ivOut2.setBackgroundResource(R.drawable.out_empty)
                         }
                         2 -> {
-                            ivOut1.setBackgroundResource(com.example.baseball_simulation_app.R.drawable.out_fill)
-                            ivOut2.setBackgroundResource(com.example.baseball_simulation_app.R.drawable.out_fill)
+                            ivOut1.setBackgroundResource(R.drawable.out_fill)
+                            ivOut2.setBackgroundResource(R.drawable.out_fill)
+                        }
+                    }
+
+                    btnPlay.setOnClickListener {
+                        val context = itemView.context
+                        val intent = Intent(context, ChangeMemberActivity::class.java).apply {
+                            putExtra(ChangeMemberActivity.EXTRA_TEAM_ID, teamId)
+                            putExtra(ChangeMemberActivity.EXTRA_IS_HOME_TEAM, isHomeTeam)
+                            putExtra(ChangeMemberActivity.EXTRA_GAME_ID, gameId)
+                        }
+                        context.startActivity(intent)
+
+                        if (context is AppCompatActivity) {
+                            context.overridePendingTransition(
+                                R.anim.slide_in_right,
+                                R.anim.slide_out_left
+                            )
                         }
                     }
                 }
@@ -140,10 +190,12 @@ class HighlightActivity : AppCompatActivity() {
             holder.bind(highlights[position])
         }
 
-        override fun getItemCount(): Int = highlights.size
+        override fun getItemCount() = highlights.size
     }
 
     companion object {
         const val EXTRA_TEAM_ID = "extra_team_id"
+        const val EXTRA_IS_HOME_TEAM = "extra_is_home_team"
+        const val EXTRA_GAME_ID = "extra_game_id"
     }
 }

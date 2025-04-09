@@ -13,4 +13,8 @@
         <item name="android:calendarTextColor">@color/calendar_day_normal</item>
         <item name="android:datePickerMode">calendar</item>
     </style>
+    <style name="circleImageView">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

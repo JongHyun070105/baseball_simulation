@@ -28,7 +28,7 @@ data class GameResponse(
             awayScore = away.score,
             stadium = stadium,
             date = dateTime.toString(),
-            status = status
+            status = status,
         )
     }
 }

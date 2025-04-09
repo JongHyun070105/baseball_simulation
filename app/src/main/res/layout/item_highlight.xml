@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--item_highlight.xml-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -48,12 +49,10 @@
                 android:id="@+id/ivHomeTeamLogo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
-                android:clickable="true"
-                android:focusable="true"
                 android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/logo_lg_twins" />
+                tools:src="@drawable/placeholder_logo" />
 
             <!-- 홈 점수 -->
             <TextView
@@ -102,12 +101,9 @@
                 android:id="@+id/ivAwayTeamLogo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/logo_kt" />
+                tools:src="@drawable/placeholder_logo" />
 
             <!-- 홈팀 이름 -->
             <TextView
@@ -160,11 +156,10 @@
                     <!-- 상단 베이스 (2루) - 크기 축소 -->
                     <ImageView
                         android:id="@+id/ivSecondBase"
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="4dp"
-                        android:rotation="45"
+                        android:layout_marginBottom="-2dp"
                         android:background="@drawable/base_empty" />
 
                     <!-- 하단 베이스 (1루, 3루) - 크기 축소 및 간격 증가 -->
@@ -175,18 +170,17 @@
 
                         <ImageView
                             android:id="@+id/ivThirdBase"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginEnd="12dp"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_marginEnd="8dp"
                             android:background="@drawable/base_empty"
-                            android:rotation="45" />
+                            />
 
                         <ImageView
                             android:id="@+id/ivFirstBase"
-                            android:layout_width="20dp"
-                            android:layout_height="20dp"
-                            android:layout_marginStart="12dp"
-                            android:rotation="45"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:layout_marginStart="8dp"
                             android:background="@drawable/base_fill" />
                     </LinearLayout>
                 </LinearLayout>
@@ -198,7 +192,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:gravity="center"
-                    android:layout_marginStart="20dp">
+                    android:layout_marginStart="10dp">
 
                     <TextView
                         android:id="@+id/tvOutLabel"
@@ -213,20 +207,20 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginTop="4dp">
+                        android:layout_marginTop="0dp">
 
                         <View
                             android:id="@+id/ivOut1"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:layout_margin="3dp"
+                            android:layout_margin="4dp"
                             android:background="@drawable/out_fill" />
 
                         <View
                             android:id="@+id/ivOut2"
                             android:layout_width="18dp"
                             android:layout_height="18dp"
-                            android:layout_margin="3dp"
+                            android:layout_margin="4dp"
                             android:background="@drawable/out_empty" />
                     </LinearLayout>
                 </LinearLayout>
@@ -287,7 +281,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent" />
+                app:layout_constraintEnd_toEndOf="parent"
+                />
 
             <!-- 투수 영역 -->
             <LinearLayout

@@ -2,27 +2,18 @@ package com.example.baseball_simulation_app
 
 import android.app.AlertDialog
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.baseball_simulation_app.R
-import com.example.baseball_simulation_app.data.model.GameModel
-import com.example.baseball_simulation_app.data.model.TeamModel
 import com.example.baseball_simulation_app.databinding.ActivityMainBinding
 import com.example.baseball_simulation_app.ui.calendar.DatePickerPopupManager
 import com.example.baseball_simulation_app.ui.main.DailyGamesFragment
-import com.example.baseball_simulation_app.ui.main.GameAdapter
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() {
 
@@ -30,8 +21,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var viewPagerAdapter: DailyGamesPagerAdapter
     private val calendar: Calendar = Calendar.getInstance()
     private lateinit var datePickerPopupManager: DatePickerPopupManager
-    private val datesList = mutableListOf<Date>()
-    private val DAYS_TO_LOAD = 60 // 앞뒤로 로딩할 날짜 수
+    private val datesList = mutableListOf<Pair<Date, String>>() // Date + Code
 
     // 상수로 제한할 월과 연도 정의
     companion object {
@@ -40,8 +30,6 @@ class MainActivity : AppCompatActivity() {
         private const val START_DAY = 23
         private const val END_MONTH = Calendar.OCTOBER
         private const val END_DAY = 1
-        // VALID_MONTHS 추가
-        private val VALID_MONTHS = (START_MONTH + 1)..(END_MONTH + 1) // Calendar는 0부터 시작하므로 +1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -201,21 +189,24 @@ class MainActivity : AppCompatActivity() {
         // ViewPager 페이지 변경 리스너
         binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                val selectedDate = datesList[position]
-
-                // 달력 시간 업데이트
+                val selectedDate = datesList[position].first // ← .first 추가!
                 calendar.time = selectedDate
                 updateDateText()
             }
+
         })
     }
 
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
 
+    private fun generateCodeForDate(date: Date): String {
+        val sdf = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        return "CODE_${sdf.format(date)}"
+    }
+
     private fun generateDatesList() {
         datesList.clear()
 
-        // 3월 23일부터 10월 1일까지만 포함
         val startCal = Calendar.getInstance().apply {
             clear()
             set(FIXED_YEAR, START_MONTH, START_DAY)
@@ -226,39 +217,25 @@ class MainActivity : AppCompatActivity() {
             set(FIXED_YEAR, END_MONTH, END_DAY)
         }
 
-        // 기준 날짜를 현재 선택된 날짜로 설정
-        val baseCalendar = Calendar.getInstance().apply {
-            time = calendar.time
-            set(Calendar.HOUR_OF_DAY, 0)
-            set(Calendar.MINUTE, 0)
-            set(Calendar.SECOND, 0)
-            set(Calendar.MILLISECOND, 0)
-        }
-
-        // 기준 날짜가 범위 밖이면 시작 날짜로 설정
-        if (baseCalendar.before(startCal) || baseCalendar.after(endCal)) {
-            baseCalendar.time = startCal.time
-        }
-
-        // 시작일부터 종료일까지 모든 날짜 추가 (월요일 제외)
         val tempCal = Calendar.getInstance().apply {
             time = startCal.time
         }
 
         while (tempCal.before(endCal) || tempCal.equals(endCal)) {
             if (tempCal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                datesList.add(tempCal.time)
+                val date = tempCal.time
+                val code = generateCodeForDate(date) // ↓ 추가
+                datesList.add(date to code)
             }
             tempCal.add(Calendar.DAY_OF_YEAR, 1)
         }
 
-        // 날짜 정렬 (확실하게)
-        datesList.sortBy { it.time }
+        datesList.sortBy { it.first.time }
     }
 
     private fun getPositionForDate(date: Date): Int {
         val targetDateStr = dateFormat.format(date)
-        return datesList.indexOfFirst { dateFormat.format(it) == targetDateStr }
+        return datesList.indexOfFirst { dateFormat.format(it.first) == targetDateStr }
     }
 
     private fun setupViewPagerAdapter() {
@@ -296,31 +273,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun isDateWithinAllowedRange(date: Date): Boolean {
-        val tempCal = Calendar.getInstance().apply {
-            time = date
-        }
-
-        val startCal = Calendar.getInstance().apply {
-            clear()
-            set(FIXED_YEAR, START_MONTH, START_DAY, 0, 0, 0)
-        }
-
-        val endCal = Calendar.getInstance().apply {
-            clear()
-            set(FIXED_YEAR, END_MONTH, END_DAY, 23, 59, 59)
-        }
-
-        return !tempCal.before(startCal) && !tempCal.after(endCal)
-    }
-
     // ViewPager2용 어댑터
-    inner class DailyGamesPagerAdapter(fa: FragmentActivity, private val dates: List<Date>) : FragmentStateAdapter(fa) {
+    inner class DailyGamesPagerAdapter(fa: FragmentActivity, private val dates: List<Pair<Date, String>>) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = dates.size
 
         override fun createFragment(position: Int): Fragment {
-            val fragmentDate = dates[position]
-            return DailyGamesFragment.newInstance(fragmentDate)
+            val (fragmentDate, code) = dates[position]
+            return DailyGamesFragment.newInstance(fragmentDate, code) // ← code 넘기기
         }
     }
 }

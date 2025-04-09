@@ -23,6 +23,11 @@ package="com.example.baseball_simulation_app">
     <activity
         android:name=".ui.main.HighlightActivity"
         android:exported="false" />
+    <activity android:name=".ui.main.ChangeMemberActivity"
+        android:exported="false" />
+    <activity
+        android:name=".ui.main.MyPickActivity"
+        android:exported="false" />
 </application>
 
 </manifest>
