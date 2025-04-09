@@ -1,5 +1,6 @@
 package com.example.baseball_simulation_app.ui.calendar
 
+import android.app.DatePickerDialog
 import android.content.Context
 import android.view.View
 import android.widget.PopupWindow
@@ -50,20 +51,31 @@ class DatePickerPopupManager(private val context: Context) {
     /**
      * DatePickerDialog를 표시합니다
      */
+    // DatePickerPopupManager.kt
     fun showDatePickerDialog(
-        currentDate: Calendar,
-        onDateSelected: (year: Int, month: Int, day: Int) -> Unit
+        calendar: Calendar,
+        minDate: Long? = null,
+        maxDate: Long? = null,
+        dateSetListener: (year: Int, month: Int, dayOfMonth: Int) -> Unit
     ) {
-        val decorator = MondayDateDecorator(context)
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val day = calendar.get(Calendar.DAY_OF_MONTH)
 
-        val dialog = decorator.createDatePickerDialog(
-            currentDate.get(Calendar.YEAR),
-            currentDate.get(Calendar.MONTH),
-            currentDate.get(Calendar.DAY_OF_MONTH)
-        ) { year, month, day ->
-            onDateSelected(year, month, day)
-        }
+        val datePickerDialog = DatePickerDialog(
+            context,
+            { _, selectedYear, selectedMonth, selectedDay ->
+                dateSetListener(selectedYear, selectedMonth, selectedDay)
+            },
+            year,
+            month,
+            day
+        )
 
-        dialog.show()
+        // 최소, 최대 날짜 설정
+        minDate?.let { datePickerDialog.datePicker.minDate = it }
+        maxDate?.let { datePickerDialog.datePicker.maxDate = it }
+
+        datePickerDialog.show()
     }
 }

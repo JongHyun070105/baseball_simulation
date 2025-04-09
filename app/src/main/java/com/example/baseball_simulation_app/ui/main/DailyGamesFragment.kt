@@ -1,19 +1,24 @@
-package com.example.baseball_simulation_app
+package com.example.baseball_simulation_app.ui.main
 
+import android.Manifest
+import com.example.baseball_simulation_app.data.repository.GameRepository
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.annotation.RequiresPermission
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.baseball_simulation_app.data.model.GameModel
-import com.example.baseball_simulation_app.data.model.TeamModel
+import com.example.baseball_simulation_app.network.NetworkResult
 import com.example.baseball_simulation_app.databinding.FragmentDailyGamesBinding
-import com.example.baseball_simulation_app.ui.main.GameAdapter
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.example.baseball_simulation_app.utils.DateUtils
+import com.example.baseball_simulation_app.utils.NetworkUtils
+import kotlinx.coroutines.launch
 import java.util.Calendar
+import java.util.Date
 
 class DailyGamesFragment : Fragment() {
 
@@ -21,7 +26,7 @@ class DailyGamesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var gameAdapter: GameAdapter
-    private val gameList = mutableListOf<GameModel>()
+    private val gameRepository = GameRepository()
     private var currentDate: Date? = null
 
     companion object {
@@ -55,6 +60,12 @@ class DailyGamesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // 어댑터 초기화
+        gameAdapter = GameAdapter { game ->
+            // 게임 클릭 시 처리 (예: 상세 페이지로 이동)
+            navigateToGameDetail(game)
+        }
+
         setupRecyclerView()
 
         // 월요일인 경우 "경기가 없습니다" 메시지 표시
@@ -63,54 +74,89 @@ class DailyGamesFragment : Fragment() {
 
         if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
             // 월요일일 경우 경기 없음 표시
-            binding.tvNoGames.visibility = View.VISIBLE
-            binding.rvDailyGameList.visibility = View.GONE
+            showNoGamesMessage("월요일은 경기가 없습니다.")
         } else {
-            // 월요일이 아닌 경우 게임 목록 표시
-            binding.tvNoGames.visibility = View.GONE
-            binding.rvDailyGameList.visibility = View.VISIBLE
+            // 월요일이 아닌 경우 게임 목록 로드
             loadGamesForCurrentDate()
         }
     }
 
     private fun setupRecyclerView() {
-        gameAdapter = GameAdapter(gameList) { game ->
-            // 경기 클릭 시 선수 교체 화면으로 이동
-            (activity as? MainActivity)?.navigateToPlayerSwapScreen(game)
-        }
-
         binding.rvDailyGameList.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = gameAdapter
         }
     }
 
+    @RequiresPermission(Manifest.permission.ACCESS_NETWORK_STATE)
     private fun loadGamesForCurrentDate() {
-        // 현재 날짜에 맞는 게임 데이터 로드
-        // 실제로는 API 또는 로컬 DB에서 데이터를 로드합니다
-        gameList.clear()
-
-        // 날짜 형식 변환
-        val dateFormat = SimpleDateFormat("yyyy. MM. dd", Locale.getDefault())
-        val dateString = currentDate?.let { dateFormat.format(it) } ?: return
-
-        // 더미 데이터 추가 (현재 날짜에 5개의 경기 데이터 생성)
-        for (i in 1..5) {
-            gameList.add(
-                GameModel(
-                    id = "$dateString-$i",
-                    homeTeam = TeamModel("LG", "엘지", R.drawable.placeholder_logo),
-                    awayTeam = TeamModel("KT", "KT", R.drawable.placeholder_logo),
-                    homeScore = (1..10).random(),
-                    awayScore = (1..10).random(),
-                    stadium = "잠실",
-                    date = dateString,
-                    highlights = listOf("highlight1", "highlight2", "highlight3", "highlight4", "highlight5")
-                )
-            )
+        // 네트워크 연결 확인
+        if (!NetworkUtils.isNetworkAvailable(requireContext())) {
+            showNetworkError()
+            return
         }
 
-        gameAdapter.notifyDataSetChanged()
+        // 로딩 표시
+        showLoading(true)
+
+        // 현재 선택된 날짜 사용
+        val selectedDate = currentDate ?: Date()
+
+        // API 호출
+        viewLifecycleOwner.lifecycleScope.launch {
+            when (val result = gameRepository.getGames(selectedDate)) {
+                is NetworkResult.Success -> {
+                    val games = result.data
+                    if (games.isEmpty()) {
+                        showNoGamesMessage("해당 날짜에 경기가 없습니다.")
+                    } else {
+                        updateGameList(games)
+                    }
+                }
+                is NetworkResult.Error -> {
+                    showError(result.message)
+                }
+                is NetworkResult.Loading -> {
+                    // 이미 위에서 로딩 표시함
+                }
+            }
+            showLoading(false)
+        }
+    }
+    private fun updateGameList(games: List<GameModel>) {
+        binding.tvNoGames.visibility = View.GONE
+        binding.rvDailyGameList.visibility = View.VISIBLE
+        gameAdapter.submitList(games)
+    }
+
+    private fun showNoGamesMessage(message: String) {
+        binding.tvNoGames.text = message
+        binding.tvNoGames.visibility = View.VISIBLE
+        binding.rvDailyGameList.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showNetworkError() {
+        binding.tvNoGames.text = "인터넷 연결이 없습니다.\n연결 후 다시 시도해주세요."
+        binding.tvNoGames.visibility = View.VISIBLE
+        binding.rvDailyGameList.visibility = View.GONE
+        binding.progressBar.visibility = View.GONE
+    }
+
+    private fun showError(message: String) {
+        binding.tvNoGames.text = "데이터를 불러오는 데 실패했습니다."
+        binding.tvNoGames.visibility = View.VISIBLE
+        binding.rvDailyGameList.visibility = View.GONE
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+    }
+
+    private fun navigateToGameDetail(game: GameModel) {
+        // TODO: 게임 상세 페이지로 이동 처리
+        // 예: findNavController().navigate(R.id.action_dailyGamesFragment_to_gameDetailFragment, bundleOf("gameId" to game.id))
     }
 
     override fun onDestroyView() {

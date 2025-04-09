@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.devtools.ksp")
     id ("kotlin-parcelize")
+    id("kotlin-kapt")
+
 }
 
 android {
@@ -54,6 +56,19 @@ dependencies {
     // Fragment KTX 추가 (activityViewModels() 사용을 위해 필수)
     implementation(libs.androidx.fragment.ktx)
 
+    // Retrofit 및 네트워크 관련
+    implementation (libs.retrofit)
+    implementation (libs.converter.gson)
+    implementation (libs.logging.interceptor)
+    implementation (libs.gson)
+
+    // 이미지 로딩
+    annotationProcessor(libs.compiler)
+
+    // 코루틴
+    implementation (libs.kotlinx.coroutines.android)
+    implementation (libs.androidx.lifecycle.runtime.ktx.v251)
+
     // 기존 의존성들
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -68,6 +83,10 @@ dependencies {
     ksp (libs.androidx.room.compiler)
     ksp (libs.hilt.compiler)
 
+    implementation("com.github.bumptech.glide:glide:4.15.1")
+    kapt ("com.github.bumptech.glide:compiler:4.15.1")
+
+    implementation (libs.androidsvg)
 
     // Compose 관련 의존성 (만약 필요하지 않다면 제거해도 됨)
     implementation(platform(libs.androidx.compose.bom))

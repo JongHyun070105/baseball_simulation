@@ -1,6 +1,8 @@
 package com.example.baseball_simulation_app
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.PopupWindow
 import androidx.appcompat.app.AppCompatActivity
@@ -14,6 +16,7 @@ import com.example.baseball_simulation_app.data.model.GameModel
 import com.example.baseball_simulation_app.data.model.TeamModel
 import com.example.baseball_simulation_app.databinding.ActivityMainBinding
 import com.example.baseball_simulation_app.ui.calendar.DatePickerPopupManager
+import com.example.baseball_simulation_app.ui.main.DailyGamesFragment
 import com.example.baseball_simulation_app.ui.main.GameAdapter
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewPagerAdapter: DailyGamesPagerAdapter
-    private val calendar = Calendar.getInstance()
+    private val calendar: Calendar = Calendar.getInstance()
     private lateinit var datePickerPopupManager: DatePickerPopupManager
     private val datesList = mutableListOf<Date>()
     private val DAYS_TO_LOAD = 60 // 앞뒤로 로딩할 날짜 수
@@ -33,7 +36,12 @@ class MainActivity : AppCompatActivity() {
     // 상수로 제한할 월과 연도 정의
     companion object {
         private const val FIXED_YEAR = 2024
-        private val VALID_MONTHS = listOf(3, 4, 5, 6, 7, 8, 9, 10, 11) // 3월부터 11월까지만 허용
+        private const val START_MONTH = Calendar.MARCH
+        private const val START_DAY = 23
+        private const val END_MONTH = Calendar.OCTOBER
+        private const val END_DAY = 1
+        // VALID_MONTHS 추가
+        private val VALID_MONTHS = (START_MONTH + 1)..(END_MONTH + 1) // Calendar는 0부터 시작하므로 +1
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,38 +49,35 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 연도를 2024년으로 고정
-        calendar.set(Calendar.YEAR, FIXED_YEAR)
-
-        // DatePicker 팝업 매니저 초기화
+        initializeCalendar()
         datePickerPopupManager = DatePickerPopupManager(this)
-
-        // 만약 현재 월이 유효하지 않은 월이라면, 가장 가까운 유효한 월로 설정
-        val currentMonth = calendar.get(Calendar.MONTH) + 1 // Calendar.MONTH는 0부터 시작
-        if (!VALID_MONTHS.contains(currentMonth)) {
-            calendar.set(Calendar.MONTH, VALID_MONTHS[0] - 1) // 첫 번째 유효한 월로 설정
-        }
-
-        // 월요일인 경우 다음 날로 설정
-        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
-            calendar.add(Calendar.DAY_OF_MONTH, 1)
-        }
 
         setupDateNavigation()
         setupTeamFilter()
         setupViewPager()
     }
 
+    private fun initializeCalendar() {
+        // 2024년 3월 23일로 고정
+        calendar.clear()
+        calendar.set(FIXED_YEAR, START_MONTH, START_DAY)
+
+        // 만약 이 날짜가 월요일이라면 다음 날로 이동
+        if (calendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+            calendar.add(Calendar.DAY_OF_MONTH, 1)
+        }
+    }
+
     private fun setupDateNavigation() {
         // 현재 날짜 설정
         updateDateText()
 
-        // 이전 달 버튼
+        // 이전 날 버튼 (버튼 이름 변경: 이전 달 -> 이전 날)
         binding.btnPrevMonth.setOnClickListener {
             navigateToPreviousDay()
         }
 
-        // 다음 달 버튼
+        // 다음 날 버튼 (버튼 이름 변경: 다음 달 -> 다음 날)
         binding.btnNextMonth.setOnClickListener {
             navigateToNextDay()
         }
@@ -85,37 +90,92 @@ class MainActivity : AppCompatActivity() {
         binding.btnDropdownDate.setOnClickListener { showDatePicker() }
     }
 
+    private fun updateNavigationButtonStates() {
+        val currentDate = calendar.time
+        val startDate = Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, START_MONTH, START_DAY, 0, 0, 0)
+        }.time
+
+        val endDate = Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, END_MONTH, END_DAY, 23, 59, 59)
+        }.time
+
+        // 이전 날 버튼 상태 업데이트
+        val isPrevEnabled = currentDate.after(startDate) || dateFormat.format(currentDate) == dateFormat.format(startDate)
+        binding.btnPrevMonth.isEnabled = isPrevEnabled
+        binding.btnPrevMonth.alpha = if (isPrevEnabled) 1.0f else 0.5f
+
+        // 다음 날 버튼 상태 업데이트
+        val isNextEnabled = currentDate.before(endDate) || dateFormat.format(currentDate) == dateFormat.format(endDate)
+        binding.btnNextMonth.isEnabled = isNextEnabled
+        binding.btnNextMonth.alpha = if (isNextEnabled) 1.0f else 0.5f
+    }
+
     private fun showDatePicker() {
+        // minDate와 maxDate 생성
+        val minCalendar = Calendar.getInstance()
+        minCalendar.set(FIXED_YEAR, START_MONTH, START_DAY, 0, 0, 0)
+        val minDate = minCalendar.timeInMillis
+
+        val maxCalendar = Calendar.getInstance()
+        maxCalendar.set(FIXED_YEAR, END_MONTH, END_DAY, 23, 59, 59)
+        val maxDate = maxCalendar.timeInMillis
+
         // DatePickerDialog 사용
-        datePickerPopupManager.showDatePickerDialog(calendar) { year, month, day ->
-            val previousDate = calendar.time
-            calendar.set(year, month, day)
+        datePickerPopupManager.showDatePickerDialog(
+            calendar,
+            minDate,
+            maxDate
+        ) { year, month, day ->
+            // 임시 캘린더 객체를 생성하여 선택한 날짜가 월요일인지 확인
+            val tempCalendar = Calendar.getInstance()
+            tempCalendar.set(year, month, day)
 
-            updateDateText()
-
-            // 선택한 날짜로 ViewPager 이동
-            val position = getPositionForDate(calendar.time)
-            if (position != -1) {
-                binding.viewPager.setCurrentItem(position, true)
+            // 월요일인 경우 처리
+            if (tempCalendar.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY) {
+                // 월요일 팝업 표시
+                AlertDialog.Builder(this)
+                    .setTitle("알림")
+                    .setMessage("월요일은 경기가 없습니다.")
+                    .setPositiveButton("확인") { dialog, _ ->
+                        dialog.dismiss()
+                        // 팝업 닫은 후 다음 날(화요일)로 이동
+                        tempCalendar.add(Calendar.DAY_OF_MONTH, 1)
+                        calendar.time = tempCalendar.time
+                        updateDateAndViewPager()
+                    }
+                    .create()
+                    .show()
             } else {
-                // 유효하지 않은 날짜면 달력 재구성
-                generateDatesList()
-                setupViewPagerAdapter()
-                binding.viewPager.setCurrentItem(DAYS_TO_LOAD, false) // 중간 위치로 설정
+                // 월요일이 아닌 경우 바로 해당 날짜로 설정
+                calendar.set(year, month, day)
+                updateDateAndViewPager()
             }
         }
     }
 
-    private fun updateNavigationButtonStates() {
-        val currentMonth = calendar.get(Calendar.MONTH) + 1
+    // 날짜 업데이트 및 ViewPager 이동을 위한 메서드 추출
+    private fun updateDateAndViewPager() {
+        updateDateText()
 
-        // 이전 달 버튼 상태 업데이트
-        binding.btnPrevMonth.isEnabled = currentMonth >= VALID_MONTHS.minOrNull()!!
-        binding.btnPrevMonth.alpha = if (binding.btnPrevMonth.isEnabled) 1.0f else 0.5f
+        // 선택한 날짜로 ViewPager 이동
+        val currentPosition = getPositionForDate(calendar.time)
+        if (currentPosition != -1) {
+            binding.viewPager.setCurrentItem(currentPosition, true)
+        } else {
+            // 유효하지 않은 날짜면 달력 재구성
+            generateDatesList()
+            setupViewPagerAdapter()
 
-        // 다음 달 버튼 상태 업데이트
-        binding.btnNextMonth.isEnabled = currentMonth <= VALID_MONTHS.maxOrNull()!!
-        binding.btnNextMonth.alpha = if (binding.btnNextMonth.isEnabled) 1.0f else 0.5f
+            // 현재 날짜에 맞는 포지션 찾기
+            val positionAfterUpdate = getPositionForDate(calendar.time)
+            binding.viewPager.setCurrentItem(
+                if (positionAfterUpdate >= 0) positionAfterUpdate else 0,
+                false
+            )
+        }
     }
 
     private fun updateDateText() {
@@ -150,70 +210,76 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+
     private fun generateDatesList() {
         datesList.clear()
 
-        // 현재 날짜를 기준으로 앞뒤로 DAYS_TO_LOAD일만큼 날짜 생성
-        val tempCalendar = Calendar.getInstance()
-        tempCalendar.time = calendar.time
+        // 3월 23일부터 10월 1일까지만 포함
+        val startCal = Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, START_MONTH, START_DAY)
+        }
 
-        // 현재 날짜 이전의 날짜들 추가
-        tempCalendar.add(Calendar.DAY_OF_YEAR, -DAYS_TO_LOAD)
-        for (i in 0 until DAYS_TO_LOAD) {
-            // 월요일이 아닌 날짜만 추가
-            if (tempCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                datesList.add(tempCalendar.time)
+        val endCal = Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, END_MONTH, END_DAY)
+        }
+
+        // 기준 날짜를 현재 선택된 날짜로 설정
+        val baseCalendar = Calendar.getInstance().apply {
+            time = calendar.time
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+
+        // 기준 날짜가 범위 밖이면 시작 날짜로 설정
+        if (baseCalendar.before(startCal) || baseCalendar.after(endCal)) {
+            baseCalendar.time = startCal.time
+        }
+
+        // 시작일부터 종료일까지 모든 날짜 추가 (월요일 제외)
+        val tempCal = Calendar.getInstance().apply {
+            time = startCal.time
+        }
+
+        while (tempCal.before(endCal) || tempCal.equals(endCal)) {
+            if (tempCal.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
+                datesList.add(tempCal.time)
             }
-            tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
+            tempCal.add(Calendar.DAY_OF_YEAR, 1)
         }
 
-        // 현재 날짜 추가 (현재 날짜가 월요일이 아닌 경우에만)
-        if (calendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-            datesList.add(calendar.time)
-        }
-
-        // 현재 날짜 이후의 날짜들 추가
-        tempCalendar.time = calendar.time
-        tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
-        for (i in 0 until DAYS_TO_LOAD) {
-            // 월요일이 아닌 날짜만 추가
-            if (tempCalendar.get(Calendar.DAY_OF_WEEK) != Calendar.MONDAY) {
-                datesList.add(tempCalendar.time)
-            }
-            tempCalendar.add(Calendar.DAY_OF_YEAR, 1)
-        }
+        // 날짜 정렬 (확실하게)
+        datesList.sortBy { it.time }
     }
 
-    // MainActivity.kt 파일에 이 함수 추가
-    fun navigateToPlayerSwapScreen(game: GameModel) {
-        // 선수 교체 화면으로 이동하는 코드
-        // Intent를 사용하여 PlayerSwapActivity로 이동
-        // val intent = Intent(this, PlayerSwapActivity::class.java)
-        // intent.putExtra("GAME_ID", game.id)
-        // startActivity(intent)
-
-        // 구현 예정
+    private fun getPositionForDate(date: Date): Int {
+        val targetDateStr = dateFormat.format(date)
+        return datesList.indexOfFirst { dateFormat.format(it) == targetDateStr }
     }
 
     private fun setupViewPagerAdapter() {
         viewPagerAdapter = DailyGamesPagerAdapter(this, datesList)
         binding.viewPager.adapter = viewPagerAdapter
-        binding.viewPager.setCurrentItem(DAYS_TO_LOAD, false) // 중간 위치에서 시작 (현재 날짜)
+
+        // 3월 23일에 해당하는 포지션 찾기
+        val startDatePosition = getPositionForDate(Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, START_MONTH, START_DAY)
+        }.time)
+
+        // 시작 포지션 설정 (3월 23일)
+        if (startDatePosition != -1) {
+            binding.viewPager.setCurrentItem(startDatePosition, false)
+        } else {
+            binding.viewPager.setCurrentItem(0, false)
+        }
 
         // 미리 로드할 페이지 수 설정
         binding.viewPager.offscreenPageLimit = 3
-    }
-
-    private fun getPositionForDate(date: Date): Int {
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val targetDateStr = dateFormat.format(date)
-
-        datesList.forEachIndexed { index, currentDate ->
-            if (dateFormat.format(currentDate) == targetDateStr) {
-                return index
-            }
-        }
-        return -1
     }
 
     private fun navigateToPreviousDay() {
@@ -230,12 +296,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun isDateWithinAllowedRange(date: Date): Boolean {
+        val tempCal = Calendar.getInstance().apply {
+            time = date
+        }
+
+        val startCal = Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, START_MONTH, START_DAY, 0, 0, 0)
+        }
+
+        val endCal = Calendar.getInstance().apply {
+            clear()
+            set(FIXED_YEAR, END_MONTH, END_DAY, 23, 59, 59)
+        }
+
+        return !tempCal.before(startCal) && !tempCal.after(endCal)
+    }
+
     // ViewPager2용 어댑터
     inner class DailyGamesPagerAdapter(fa: FragmentActivity, private val dates: List<Date>) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = dates.size
 
         override fun createFragment(position: Int): Fragment {
-            return DailyGamesFragment.newInstance(dates[position])
+            val fragmentDate = dates[position]
+            return DailyGamesFragment.newInstance(fragmentDate)
         }
     }
 }

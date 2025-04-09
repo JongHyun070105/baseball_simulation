@@ -9,7 +9,6 @@
     app:cardCornerRadius="24dp"
     app:cardElevation="8dp">
 
-    <!-- Added a gradient background to the card to create more visual distinctiveness -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,7 +26,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <!-- 왼쪽 빈 공간 유지용 가이드 (가중치 1) -->
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/leftSpaceGuide"
                 android:layout_width="wrap_content"
@@ -35,7 +33,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.25" />
 
-            <!-- 경기장 텍스트를 중앙에 배치 -->
             <TextView
                 android:id="@+id/tvGameStatus"
                 android:layout_width="wrap_content"
@@ -48,82 +45,21 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- 경기 일자는 오른쪽에 그대로 유지 -->
         </androidx.constraintlayout.widget.ConstraintLayout>
-        <!-- 왼쪽 팀(LG TWINS) -->
-        <ImageView
-            android:id="@+id/ivHomeTeamLogo"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="24dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layoutGameInfo"
-            tools:src="@drawable/logo_lg_twins" />
 
-        <TextView
-            android:id="@+id/tvHomeTeamName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="엘지"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@id/ivHomeTeamLogo"
-            app:layout_constraintStart_toStartOf="@id/ivHomeTeamLogo"
-            app:layout_constraintTop_toBottomOf="@id/ivHomeTeamLogo" />
-
-        <!-- 점수 및 경기 정보 -->
-        <TextView
-            android:id="@+id/tvHomeScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="3"
-            android:textColor="@color/black"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/ivHomeTeamLogo"
-            app:layout_constraintEnd_toStartOf="@id/tvScoreDivider"
-            app:layout_constraintStart_toEndOf="@id/ivHomeTeamLogo"
-            app:layout_constraintTop_toTopOf="@id/ivHomeTeamLogo" />
-
-        <TextView
-            android:id="@+id/tvScoreDivider"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" : "
-            android:textColor="@color/black"
-            android:textSize="42sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/tvHomeScore"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/tvHomeScore" />
-
-        <TextView
-            android:id="@+id/tvAwayScore"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:textColor="@color/black"
-            android:textSize="48sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@id/tvHomeScore"
-            app:layout_constraintEnd_toStartOf="@id/ivAwayTeamLogo"
-            app:layout_constraintStart_toEndOf="@id/tvScoreDivider"
-            app:layout_constraintTop_toTopOf="@id/tvHomeScore" />
-
-        <!-- 오른쪽 팀(KT) -->
+        <!-- 왼쪽 팀 (Away팀) -->
         <ImageView
             android:id="@+id/ivAwayTeamLogo"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/ivHomeTeamLogo"
-            tools:src="@drawable/logo_kt" />
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/layoutGameInfo"
+            tools:src="@drawable/placeholder_logo" />
 
         <TextView
             android:id="@+id/tvAwayTeamName"
@@ -137,6 +73,72 @@
             app:layout_constraintEnd_toEndOf="@id/ivAwayTeamLogo"
             app:layout_constraintStart_toStartOf="@id/ivAwayTeamLogo"
             app:layout_constraintTop_toBottomOf="@id/ivAwayTeamLogo" />
+
+        <!-- 점수 및 경기 정보 -->
+        <TextView
+            android:id="@+id/tvAwayScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:textColor="@color/black"
+            android:textSize="44sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivAwayTeamLogo"
+            app:layout_constraintEnd_toStartOf="@id/tvScoreDivider"
+            app:layout_constraintStart_toEndOf="@id/ivAwayTeamLogo"
+            app:layout_constraintTop_toTopOf="@id/ivAwayTeamLogo" />
+
+        <TextView
+            android:id="@+id/tvScoreDivider"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" : "
+            android:textColor="@color/black"
+            android:textSize="42sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/tvAwayScore"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/tvAwayScore" />
+
+        <TextView
+            android:id="@+id/tvHomeScore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="3"
+            android:textColor="@color/black"
+            android:textSize="44sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/ivAwayTeamLogo"
+            app:layout_constraintStart_toEndOf="@id/tvScoreDivider"
+            app:layout_constraintEnd_toStartOf="@id/ivHomeTeamLogo"
+            app:layout_constraintTop_toTopOf="@id/ivAwayTeamLogo" />
+
+        <!-- 오른쪽 팀 (Home팀) -->
+        <ImageView
+            android:id="@+id/ivHomeTeamLogo"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginEnd="16dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?attr/selectableItemBackground"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/ivAwayTeamLogo"
+            tools:src="@drawable/placeholder_logo" />
+
+        <TextView
+            android:id="@+id/tvHomeTeamName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="엘지"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="@id/ivHomeTeamLogo"
+            app:layout_constraintStart_toStartOf="@id/ivHomeTeamLogo"
+            app:layout_constraintTop_toBottomOf="@id/ivHomeTeamLogo" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

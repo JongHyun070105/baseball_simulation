@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <!-- 베이스 상태 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal">
+
+        <ImageView
+            android:id="@+id/ivBase1"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/base_empty"
+            android:contentDescription="1루" />
+
+        <ImageView
+            android:id="@+id/ivBase2"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/base_empty"
+            android:contentDescription="2루" />
+
+        <ImageView
+            android:id="@+id/ivBase3"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/base_empty"
+            android:contentDescription="3루" />
+    </LinearLayout>
+
+    <!-- 아웃카운트 상태 -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="8dp">
+
+        <ImageView
+            android:id="@+id/ivOut1"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/out_empty"
+            android:contentDescription="1아웃" />
+
+        <ImageView
+            android:id="@+id/ivOut2"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/out_empty"
+            android:contentDescription="2아웃" />
+
+        <ImageView
+            android:id="@+id/ivOut3"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_margin="4dp"
+            android:src="@drawable/out_empty"
+            android:contentDescription="3아웃" />
+    </LinearLayout>
+
+</LinearLayout>
