@@ -16,9 +16,9 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
+        maven { url = uri("https://jitpack.io") } // jitpack을 여기에 추가
     }
 }
 
 rootProject.name = "baseball_simulation_app"
 include(":app")
- 

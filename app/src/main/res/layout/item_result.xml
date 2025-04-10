@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="12dp"
+    android:layout_marginVertical="16dp"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="8dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/card_background"
+        android:padding="24dp">
+
+        <!-- 로고와 스코어 영역 -->
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/scoreLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
+
+            <!-- 어웨이팀 로고 -->
+            <ImageView
+                android:id="@+id/ivAwayTeamLogo"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                android:foreground="?attr/selectableItemBackground"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/placeholder_logo" />
+
+            <!-- 어웨이 점수 -->
+            <TextView
+                android:id="@+id/tvAwayScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/ivAwayTeamLogo"
+                app:layout_constraintStart_toEndOf="@id/ivAwayTeamLogo"
+                app:layout_constraintTop_toTopOf="@id/ivAwayTeamLogo" />
+
+            <!-- 점수 구분 -->
+            <TextView
+                android:id="@+id/tvScoreDivider"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=":"
+                android:textColor="@color/black"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/tvAwayScore"
+                app:layout_constraintEnd_toStartOf="@id/tvHomeScore"
+                app:layout_constraintTop_toTopOf="@id/tvAwayScore"
+                app:layout_constraintBottom_toBottomOf="@id/tvAwayScore" />
+
+            <!-- 홈 점수 -->
+            <TextView
+                android:id="@+id/tvHomeScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="24dp"
+                android:text="3"
+                android:textColor="@color/black"
+                android:textSize="42sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@id/tvAwayScore"
+                app:layout_constraintEnd_toStartOf="@id/ivHomeTeamLogo"
+                app:layout_constraintTop_toTopOf="@id/tvAwayScore" />
+
+            <!-- 홈팀 로고 -->
+            <ImageView
+                android:id="@+id/ivHomeTeamLogo"
+                android:layout_width="85dp"
+                android:layout_height="85dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/placeholder_logo" />
+
+            <!-- 어웨이팀 이름 -->
+            <TextView
+                android:id="@+id/tvAwayTeamName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="KT"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/ivAwayTeamLogo"
+                app:layout_constraintStart_toStartOf="@id/ivAwayTeamLogo"
+                app:layout_constraintTop_toBottomOf="@id/ivAwayTeamLogo" />
+
+            <!-- 스타디움 이름 -->
+            <TextView
+                android:id="@+id/tvStadium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="잠실 야구장"
+                android:textColor="@color/black"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/ivAwayTeamLogo" />
+
+            <!-- 홈팀 이름 -->
+            <TextView
+                android:id="@+id/tvHomeTeamName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="엘지"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/ivHomeTeamLogo"
+                app:layout_constraintStart_toStartOf="@id/ivHomeTeamLogo"
+                app:layout_constraintTop_toBottomOf="@id/ivHomeTeamLogo" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <!-- 승률 변화 정보 -->
+        <TextView
+            android:id="@+id/tvChartTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="승률 변화 분석"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textAlignment="center"
+            app:layout_constraintTop_toBottomOf="@id/scoreLayout"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 차트 뷰 -->
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/winRateChart"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/tvChartTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- 버튼 컨테이너 -->
+        <LinearLayout
+            android:id="@+id/buttonLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="24dp"
+            app:layout_constraintTop_toBottomOf="@id/winRateChart"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- 재시도 버튼 -->
+            <Button
+                android:id="@+id/btnRetry"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                android:text="재시도"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:padding="12dp"
+                android:background="@drawable/rounded_navy_background" />
+
+            <!-- 종료 버튼 -->
+            <Button
+                android:id="@+id/btnExit"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="8dp"
+                android:text="종료"
+                android:textSize="16sp"
+                android:textColor="@color/white"
+                android:padding="12dp"
+                android:background="@drawable/rounded_navy_background" />
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

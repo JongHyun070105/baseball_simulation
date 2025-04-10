@@ -1,5 +1,6 @@
 package com.example.baseball_simulation_app.ui.main
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -104,10 +105,22 @@ class MyPickActivity : AppCompatActivity() {
         binding.highlightSection.btnPlay.visibility = View.GONE
     }
 
-
     private fun setupStartButton() {
         binding.btnStart.setOnClickListener {
-            // TODO: Start simulation logic
+            // 시뮬레이션 시작 버튼 클릭 시 ResultActivity로 이동
+            val intent = Intent(this, ResultActivity::class.java).apply {
+                // 필요한 데이터를 인텐트에 추가
+                putExtra("BATTER_PLAYER", batterPlayer)
+                putExtra("PITCHER_PLAYER", pitcherPlayer)
+
+                // 예시 팀 데이터 전달 (실제 데이터는 앱 구조에 따라 다를 수 있음)
+                putExtra("HOME_TEAM_NAME", "엘지")
+                putExtra("AWAY_TEAM_NAME", "KT")
+                putExtra("HOME_SCORE", 3)
+                putExtra("AWAY_SCORE", 1)
+                putExtra("STADIUM", "잠실 야구장")
+            }
+            startActivity(intent)
         }
     }
 

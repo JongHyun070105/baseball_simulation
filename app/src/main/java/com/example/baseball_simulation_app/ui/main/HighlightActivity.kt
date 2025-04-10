@@ -251,3 +251,6 @@ class HighlightActivity : AppCompatActivity() {
         const val EXTRA_AWAY_TEAM_NAME = "extra_away_team_name"
     }
 }
+
+// 어웨이 팀일땐 item_highlight에서 왼쪽(투수)이 어웨이라서 문제가 없는데 홈팀으로 넘어가면 투수가 왼쪽으로 고정?
+// 시키는 거 때문에 왼쪽을 팀명 텍스트를 어웨이로 설정해놔서 팀명은 어웨이로 나타남

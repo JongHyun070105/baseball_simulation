@@ -83,6 +83,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
                 android:text="선수를 선택하세요"
+                android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
