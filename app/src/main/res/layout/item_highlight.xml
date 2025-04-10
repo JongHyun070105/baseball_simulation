@@ -44,9 +44,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- 홈팀 로고 -->
+            <!-- 어웨이팀 로고 (원래 홈팀 위치) -->
             <ImageView
-                android:id="@+id/ivHomeTeamLogo"
+                android:id="@+id/ivAwayTeamLogo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:foreground="?attr/selectableItemBackground"
@@ -54,19 +54,19 @@
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/placeholder_logo" />
 
-            <!-- 홈 점수 -->
+            <!-- 어웨이 점수 (원래 홈 점수 위치) -->
             <TextView
                 android:id="@+id/tvHomeScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:text="3"
+                android:text="1"
                 android:textColor="@color/black"
                 android:textSize="42sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/ivHomeTeamLogo"
-                app:layout_constraintStart_toEndOf="@id/ivHomeTeamLogo"
-                app:layout_constraintTop_toTopOf="@id/ivHomeTeamLogo" />
+                app:layout_constraintBottom_toBottomOf="@id/ivAwayTeamLogo"
+                app:layout_constraintStart_toEndOf="@id/ivAwayTeamLogo"
+                app:layout_constraintTop_toTopOf="@id/ivAwayTeamLogo" />
 
             <!-- 점수 구분 -->
             <TextView
@@ -82,44 +82,30 @@
                 app:layout_constraintTop_toTopOf="@id/tvHomeScore"
                 app:layout_constraintBottom_toBottomOf="@id/tvHomeScore" />
 
-            <!-- 어웨이 점수 -->
+            <!-- 홈 점수 (원래 어웨이 점수 위치) -->
             <TextView
                 android:id="@+id/tvAwayScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
-                android:text="1"
+                android:text="3"
                 android:textColor="@color/black"
                 android:textSize="42sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@id/tvHomeScore"
-                app:layout_constraintEnd_toStartOf="@id/ivAwayTeamLogo"
+                app:layout_constraintEnd_toStartOf="@id/ivHomeTeamLogo"
                 app:layout_constraintTop_toTopOf="@id/tvHomeScore" />
 
-            <!-- 어웨이팀 로고 -->
+            <!-- 홈팀 로고 (원래 어웨이팀 위치) -->
             <ImageView
-                android:id="@+id/ivAwayTeamLogo"
+                android:id="@+id/ivHomeTeamLogo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:src="@drawable/placeholder_logo" />
 
-            <!-- 홈팀 이름 -->
-            <TextView
-                android:id="@+id/tvHomeTeamName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="\uc5d8\uc9c0"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/ivHomeTeamLogo"
-                app:layout_constraintStart_toStartOf="@id/ivHomeTeamLogo"
-                app:layout_constraintTop_toBottomOf="@id/ivHomeTeamLogo" />
-
-            <!-- 어웨이팀 이름 -->
+            <!-- 어웨이팀 이름 (원래 홈팀 위치) -->
             <TextView
                 android:id="@+id/tvAwayTeamName"
                 android:layout_width="wrap_content"
@@ -132,6 +118,20 @@
                 app:layout_constraintEnd_toEndOf="@id/ivAwayTeamLogo"
                 app:layout_constraintStart_toStartOf="@id/ivAwayTeamLogo"
                 app:layout_constraintTop_toBottomOf="@id/ivAwayTeamLogo" />
+
+            <!-- 홈팀 이름 (원래 어웨이팀 위치) -->
+            <TextView
+                android:id="@+id/tvHomeTeamName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="\uc5d8\uc9c0"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="@id/ivHomeTeamLogo"
+                app:layout_constraintStart_toStartOf="@id/ivHomeTeamLogo"
+                app:layout_constraintTop_toBottomOf="@id/ivHomeTeamLogo" />
 
             <!-- 베이스와 아웃카운트를 가로로 배치하는 컨테이너 -->
             <LinearLayout
@@ -238,9 +238,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- 타자 영역 -->
+            <!-- 투수 영역 (원래 타자 위치) -->
             <LinearLayout
-                android:id="@+id/homePlayerLayout"
+                android:id="@+id/awayPlayerLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -251,19 +251,19 @@
                 app:layout_constraintEnd_toStartOf="@id/btnPlay">
 
                 <TextView
-                    android:id="@+id/tvBatterLabel"
+                    android:id="@+id/tvPitcherLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="타자"
+                    android:text="투수"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvHomePlayerInfo"
+                    android:id="@+id/tvAwayPlayerInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="\uae40\ud604\uc218"
+                    android:text="\uace0\uc601\ud45c"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
             </LinearLayout>
@@ -284,9 +284,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
-            <!-- 투수 영역 -->
+            <!-- 타자 영역 (원래 투수 위치) -->
             <LinearLayout
-                android:id="@+id/awayPlayerLayout"
+                android:id="@+id/homePlayerLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -297,19 +297,19 @@
                 app:layout_constraintStart_toEndOf="@id/btnPlay">
 
                 <TextView
-                    android:id="@+id/tvPitcherLabel"
+                    android:id="@+id/tvBatterLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="투수"
+                    android:text="타자"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
 
                 <TextView
-                    android:id="@+id/tvAwayPlayerInfo"
+                    android:id="@+id/tvHomePlayerInfo"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="\uace0\uc601\ud45c"
+                    android:text="\uae40\ud604\uc218"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
             </LinearLayout>

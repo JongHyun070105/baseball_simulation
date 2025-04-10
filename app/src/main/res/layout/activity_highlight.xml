@@ -57,4 +57,27 @@
         app:layout_constraintBottom_toBottomOf="parent"
         tools:listitem="@layout/item_highlight" />
 
+    <!-- activity_highlight.xml에 추가해야 할 부분 -->
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/tvNoHighlights"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="하이라이트가 없습니다"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

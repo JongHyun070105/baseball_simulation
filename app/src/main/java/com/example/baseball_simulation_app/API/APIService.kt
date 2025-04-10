@@ -7,4 +7,7 @@ import retrofit2.http.Path
 interface APIService {
     @GET("api/get_schedule/{date}")
     suspend fun getGames(@Path("date") date: String): Response<List<GameResponse>>
+
+    @GET("api/get_highlight/{code}")
+    suspend fun getHighlights(@Path("code") code: String): Response<HighlightResponse>
 }

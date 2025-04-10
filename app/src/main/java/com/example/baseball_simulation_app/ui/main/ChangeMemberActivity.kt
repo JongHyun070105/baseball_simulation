@@ -16,7 +16,6 @@ class ChangeMemberActivity : AppCompatActivity() {
     private lateinit var binding: ActivityChangeMemberBinding
     private lateinit var changeMemberAdapter: ChangePlayerAdapter
 
-    private var teamId: String = ""
     private var isHomeTeam: Boolean = true
     private var gameId: String = ""
 
@@ -26,7 +25,6 @@ class ChangeMemberActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // 인텐트에서 값 받기
-        teamId = intent.getStringExtra(EXTRA_TEAM_ID) ?: ""
         isHomeTeam = intent.getBooleanExtra(EXTRA_IS_HOME_TEAM, true)
         gameId = intent.getStringExtra(EXTRA_GAME_ID) ?: ""
 
@@ -136,7 +134,7 @@ class ChangeMemberActivity : AppCompatActivity() {
     }
 
     private fun setupRecyclerView() {
-        val dummyMembers = loadDummyCandidates(teamId, isHomeTeam, gameId)
+        val dummyMembers = loadDummyCandidates("teamId", isHomeTeam, gameId)
         changeMemberAdapter = ChangePlayerAdapter(dummyMembers)
         binding.rvChangeMembers.apply {
             layoutManager = LinearLayoutManager(this@ChangeMemberActivity)
@@ -181,8 +179,11 @@ class ChangeMemberActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_TEAM_ID = "extra_team_id"
         const val EXTRA_IS_HOME_TEAM = "extra_is_home_team"
         const val EXTRA_GAME_ID = "extra_game_id"
+        const val EXTRA_HOME_TEAM_ID = "extra_home_team_id"
+        const val EXTRA_AWAY_TEAM_ID = "extra_away_team_id"
+        const val EXTRA_HOME_TEAM_NAME = "extra_home_team_name"
+        const val EXTRA_AWAY_TEAM_NAME = "extra_away_team_name"
     }
 }

@@ -70,7 +70,7 @@ class GameAdapter(
                 ivHomeTeamLogo.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         val game = getItem(adapterPosition)
-                        navigateToHighlight(game.homeTeam.id, true, game.id)
+                        navigateToHighlight(true, game.id)
                     }
                 }
 
@@ -78,26 +78,40 @@ class GameAdapter(
                 ivAwayTeamLogo.setOnClickListener {
                     if (adapterPosition != RecyclerView.NO_POSITION) {
                         val game = getItem(adapterPosition)
-                        navigateToHighlight(game.awayTeam.id, false, game.id)
+                        navigateToHighlight(false, game.id)
                     }
                 }
             }
         }
 
-        private fun navigateToHighlight(teamId: String, isHomeTeam:Boolean, gameId: String) {
+        private fun navigateToHighlight(isHomeTeam: Boolean, gameId: String) {
+            val currentPosition = adapterPosition
+            if (currentPosition == RecyclerView.NO_POSITION) return
+
+            val game = getItem(currentPosition)
+
+            // 홈팀과 어웨이팀 정보 모두 가져오기
+            val homeTeamId = game.homeTeam.id
+            val awayTeamId = game.awayTeam.id
+            val homeTeamName = game.homeTeam.displayName
+            val awayTeamName = game.awayTeam.displayName
+
             val context = itemView.context
             val intent = Intent(context, HighlightActivity::class.java).apply {
-                putExtra(HighlightActivity.EXTRA_TEAM_ID, teamId)
                 putExtra(HighlightActivity.EXTRA_IS_HOME_TEAM, isHomeTeam)
                 putExtra(HighlightActivity.EXTRA_GAME_ID, gameId)
+                putExtra(HighlightActivity.EXTRA_HOME_TEAM_ID, homeTeamId)
+                putExtra(HighlightActivity.EXTRA_AWAY_TEAM_ID, awayTeamId)
+                putExtra(HighlightActivity.EXTRA_HOME_TEAM_NAME, homeTeamName)
+                putExtra(HighlightActivity.EXTRA_AWAY_TEAM_NAME, awayTeamName)
             }
             context.startActivity(intent)
 
-            // ⭐ 전환 애니메이션 추가
+            // 전환 애니메이션 추가
             if (context is AppCompatActivity) {
                 context.overridePendingTransition(
-                    R.anim.slide_in_right,  // 새로운 화면이 오른쪽에서 들어옴
-                    R.anim.slide_out_left   // 현재 화면이 왼쪽으로 나감
+                    R.anim.slide_in_right,
+                    R.anim.slide_out_left
                 )
             }
         }
