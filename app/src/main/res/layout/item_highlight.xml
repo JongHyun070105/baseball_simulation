@@ -45,13 +45,14 @@
             app:layout_constraintEnd_toEndOf="parent">
 
             <!-- 어웨이팀 로고 (원래 홈팀 위치) -->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivAwayTeamLogo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 android:foreground="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/circleImageView"
                 tools:src="@drawable/placeholder_logo" />
 
             <!-- 어웨이 점수 (원래 홈 점수 위치) -->
@@ -97,12 +98,13 @@
                 app:layout_constraintTop_toTopOf="@id/tvHomeScore" />
 
             <!-- 홈팀 로고 (원래 어웨이팀 위치) -->
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivHomeTeamLogo"
                 android:layout_width="85dp"
                 android:layout_height="85dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:shapeAppearanceOverlay="@style/circleImageView"
                 tools:src="@drawable/placeholder_logo" />
 
             <!-- 어웨이팀 이름 (원래 홈팀 위치) -->

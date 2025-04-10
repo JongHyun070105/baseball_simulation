@@ -23,14 +23,14 @@ data class SubstitutionItem(
     @SerializedName("team")
     val team: String,
     @SerializedName("current_pitcher")
-    val currentPitcher: Player,
+    val currentPitcher: HighlightPlayer,
     @SerializedName("current_hitter")
-    val currentHitter: Player,
+    val currentHitter: HighlightPlayer,
     @SerializedName("score")
     val score: Score
 )
 
-data class Player(
+data class HighlightPlayer(
     @SerializedName("name")
     val name: String,
     @SerializedName("imageUrl")

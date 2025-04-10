@@ -1,15 +1,22 @@
 package com.example.baseball_simulation_app.ui.main
 
 import android.os.Bundle
+import android.util.Log
+import android.view.View
+import android.widget.Toast
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.baseball_simulation_app.API.TeamLineup
 import com.example.baseball_simulation_app.R
+import com.example.baseball_simulation_app.client.RetrofitClient
 import com.example.baseball_simulation_app.data.model.BaseStatus
 import com.example.baseball_simulation_app.data.model.HighlightData
 import com.example.baseball_simulation_app.data.model.Player
 import com.example.baseball_simulation_app.databinding.ActivityChangeMemberBinding
+import kotlinx.coroutines.launch
 
 class ChangeMemberActivity : AppCompatActivity() {
 
@@ -18,6 +25,10 @@ class ChangeMemberActivity : AppCompatActivity() {
 
     private var isHomeTeam: Boolean = true
     private var gameId: String = ""
+    private var homeTeamName: String = ""
+    private var awayTeamName: String = ""
+
+    private val apiService = RetrofitClient.apiService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +38,23 @@ class ChangeMemberActivity : AppCompatActivity() {
         // 인텐트에서 값 받기
         isHomeTeam = intent.getBooleanExtra(EXTRA_IS_HOME_TEAM, true)
         gameId = intent.getStringExtra(EXTRA_GAME_ID) ?: ""
+        homeTeamName = intent.getStringExtra(EXTRA_HOME_TEAM_NAME) ?: ""
+        awayTeamName = intent.getStringExtra(EXTRA_AWAY_TEAM_NAME) ?: ""
 
-        setupHighlightData()
-        setupRecyclerView()
+        // 하이라이트 데이터 받기
+        val inning = intent.getStringExtra(EXTRA_INNING) ?: ""
+        val outCount = intent.getIntExtra(EXTRA_OUT_COUNT, 0)
+        val homeScore = intent.getIntExtra(EXTRA_HOME_SCORE, 0)
+        val awayScore = intent.getIntExtra(EXTRA_AWAY_SCORE, 0)
+        val pitcherName = intent.getStringExtra(EXTRA_PITCHER_NAME) ?: ""
+        val batterName = intent.getStringExtra(EXTRA_BATTER_NAME) ?: ""
+
+        // 하이라이트 데이터 설정
+        setupHighlightData(inning, outCount, homeScore, awayScore, pitcherName, batterName)
         setupListeners()
+
+        // API 데이터 로드
+        loadLineupData()
 
         onBackPressedDispatcher.addCallback(this) {
             finish()
@@ -38,54 +62,165 @@ class ChangeMemberActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupHighlightData() {
-        // 하이라이트 데이터 설정 (더미 데이터 사용)
-        val highlight = getDummyHighlightData()
+    private fun loadLineupData() {
+        lifecycleScope.launch {
+            try {
+                val response = apiService.getLineups(gameId)
+                if (response.isSuccessful && response.body() != null) {
+                    val lineupData = response.body()!!
 
-        // highlightSection은 include된 item_highlight.xml의 참조
+                    // 팀 정보 업데이트
+                    updateTeamInfo(lineupData.home.team.name, lineupData.home.team.logoUrl,
+                        lineupData.away.team.name, lineupData.away.team.logoUrl)
+
+                    // 선수 목록 설정
+                    val teamLineup = if (isHomeTeam) lineupData.home else lineupData.away
+                    setupRecyclerViewWithApiData(teamLineup)
+                } else {
+                    Log.e("API_ERROR", "코드: ${response.code()}, 메시지: ${response.message()}")
+                    Toast.makeText(this@ChangeMemberActivity,
+                        "데이터를 가져오지 못했습니다: ${response.code()}",
+                        Toast.LENGTH_SHORT).show()
+
+                    // API 호출 실패 시 더미 데이터 사용
+                    setupRecyclerViewWithDummyData()
+                }
+            } catch (e: Exception) {
+                Log.e("API_EXCEPTION", "오류: ${e.message}", e)
+                Toast.makeText(this@ChangeMemberActivity,
+                    "네트워크 오류: ${e.message}",
+                    Toast.LENGTH_SHORT).show()
+
+                // 예외 발생 시 더미 데이터 사용
+                setupRecyclerViewWithDummyData()
+            } finally {
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun updateTeamInfo(homeName: String, homeLogoUrl: String,
+                               awayName: String, awayLogoUrl: String) {
         with(binding.highlightSection) {
-            // 이닝 정보
-            tvInning.text = highlight.inning
+            tvHomeTeamName.text = homeName
+            tvAwayTeamName.text = awayName
 
-            // 팀 정보
-            tvHomeTeamName.text = highlight.homeTeamName
-            tvAwayTeamName.text = highlight.awayTeamName
-
-            // 점수 정보 (표시하지 않을 경우 주석 처리)
-            // tvHomeScore.text = "0"
-            // tvAwayScore.text = "0"
-
-            // 선수 정보
-            tvHomePlayerInfo.text = highlight.batterName
-            tvAwayPlayerInfo.text = highlight.pitcherName
-
-            // 로고 이미지
+            // 팀 로고 로딩
             Glide.with(this@ChangeMemberActivity)
-                .load(highlight.homeTeamLogoRes)
+                .load(homeLogoUrl)
                 .placeholder(R.drawable.placeholder_logo)
                 .into(ivHomeTeamLogo)
 
             Glide.with(this@ChangeMemberActivity)
-                .load(highlight.awayTeamLogoRes)
+                .load(awayLogoUrl)
                 .placeholder(R.drawable.placeholder_logo)
                 .into(ivAwayTeamLogo)
+        }
+    }
 
-            // 베이스 상태
-            ivFirstBase.setBackgroundResource(
-                if (highlight.baseStatus.first) R.drawable.base_fill
-                else R.drawable.base_empty
-            )
-            ivSecondBase.setBackgroundResource(
-                if (highlight.baseStatus.second) R.drawable.base_fill
-                else R.drawable.base_empty
-            )
-            ivThirdBase.setBackgroundResource(
-                if (highlight.baseStatus.third) R.drawable.base_fill
-                else R.drawable.base_empty
-            )
+    private fun setupRecyclerViewWithApiData(teamLineup: TeamLineup) {
+        val players = convertApiPlayersToAppPlayers(teamLineup)
+        changeMemberAdapter = ChangePlayerAdapter(players)
+        binding.rvChangeMembers.apply {
+            layoutManager = LinearLayoutManager(this@ChangeMemberActivity)
+            adapter = changeMemberAdapter
+        }
+    }
 
-            // 아웃 카운트
-            when (highlight.outCount) {
+    private fun convertApiPlayersToAppPlayers(teamLineup: TeamLineup): List<Player> {
+        Log.d("ChangeMemberActivity", teamLineup.team.name)
+        val players = mutableListOf<Player>()
+
+        // 선발, 벤치, 불펜 선수를 모두 리스트에 추가
+        val allPlayers = mutableListOf<com.example.baseball_simulation_app.API.Player>().apply {
+            addAll(teamLineup.startingLineups)
+            addAll(teamLineup.benchLineups)
+            addAll(teamLineup.bullpenLineups)
+        }
+
+        allPlayers.forEach { apiPlayer ->
+            try {
+                players.add(
+                    Player(
+                        name = apiPlayer.name,
+                        position = apiPlayer.position?.joinToString("/") ?: "미정",
+                        playerImageUrl = apiPlayer.imageUrl ?: "",
+                        isHomeTeam = isHomeTeam,
+
+                        // 안전한 변환 함수 사용
+                        battingAverage = safeStringToDouble(apiPlayer.stats?.battingAverage),
+                        hits = safeStringToInt(apiPlayer.stats?.hits),
+                        onBasePercentage = safeStringToDouble(apiPlayer.stats?.onBasePercentage),
+                        homeRuns = safeStringToInt(apiPlayer.stats?.homeRuns),
+                        sluggingPercentage = safeStringToDouble(apiPlayer.stats?.sluggingPercentage),
+                        rbi = safeStringToInt(apiPlayer.stats?.rbi),
+
+                        era = safeStringToDouble(apiPlayer.stats?.era),
+                        inningsPitched = safeStringToDouble(apiPlayer.stats?.innings),
+                        wins = safeStringToInt(apiPlayer.stats?.wins),
+                        losses = safeStringToInt(apiPlayer.stats?.losses),
+                        holds = safeStringToInt(apiPlayer.stats?.holds),
+                        saves = safeStringToInt(apiPlayer.stats?.saves)
+                    )
+                )
+            } catch (e: Exception) {
+                Log.e("ChangeMemberActivity", "선수 변환 오류: ${e.message}", e)
+            }
+        }
+
+        return players
+    }
+
+    private fun safeStringToDouble(value: String?): Double? {
+        if (value.isNullOrBlank()) return null
+        return try {
+            value.replace(",", ".").trim().toDoubleOrNull()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun safeStringToInt(value: String?): Int? {
+        if (value.isNullOrBlank()) return null
+        return try {
+            value.replace("[^0-9-]".toRegex(), "").trim().toIntOrNull()
+        } catch (e: Exception) {
+            null
+        }
+    }
+
+    private fun setupRecyclerViewWithDummyData() {
+        val dummyMembers = loadDummyCandidates("teamId", isHomeTeam, gameId)
+        changeMemberAdapter = ChangePlayerAdapter(dummyMembers)
+        binding.rvChangeMembers.apply {
+            layoutManager = LinearLayoutManager(this@ChangeMemberActivity)
+            adapter = changeMemberAdapter
+        }
+    }
+
+    private fun setupHighlightData(inning: String, outCount: Int, homeScore: Int, awayScore: Int, pitcherName: String, batterName: String) {
+        binding.highlightSection.apply {
+            // 이닝 설정
+            tvInning.text = inning
+
+            // 팀 이름 설정
+            tvHomeTeamName.text = homeTeamName
+            tvAwayTeamName.text = awayTeamName
+
+            // 점수 설정
+            tvHomeScore.text = homeScore.toString()
+            tvAwayScore.text = awayScore.toString()
+
+            if (isHomeTeam) {
+                tvAwayPlayerInfo.text = pitcherName  // 어웨이팀 투수
+                tvHomePlayerInfo.text = batterName    // 홈팀 타자
+            } else {
+                tvHomePlayerInfo.text = batterName   // 홈팀 투수
+                tvAwayPlayerInfo.text = pitcherName   // 어웨이팀 타자
+            }
+
+            // 아웃카운트 설정
+            when (outCount) {
                 0 -> {
                     ivOut1.setBackgroundResource(R.drawable.out_empty)
                     ivOut2.setBackgroundResource(R.drawable.out_empty)
@@ -99,9 +234,6 @@ class ChangeMemberActivity : AppCompatActivity() {
                     ivOut2.setBackgroundResource(R.drawable.out_fill)
                 }
             }
-
-            // PLAY 버튼 숨기기 (이미 플레이 중이므로)
-            btnPlay.visibility = android.view.View.GONE
         }
     }
 
@@ -185,5 +317,11 @@ class ChangeMemberActivity : AppCompatActivity() {
         const val EXTRA_AWAY_TEAM_ID = "extra_away_team_id"
         const val EXTRA_HOME_TEAM_NAME = "extra_home_team_name"
         const val EXTRA_AWAY_TEAM_NAME = "extra_away_team_name"
+        const val EXTRA_INNING = "extra_inning"
+        const val EXTRA_OUT_COUNT = "extra_out_count"
+        const val EXTRA_HOME_SCORE = "extra_home_score"
+        const val EXTRA_AWAY_SCORE = "extra_away_score"
+        const val EXTRA_PITCHER_NAME = "extra_pitcher_name"
+        const val EXTRA_BATTER_NAME = "extra_batter_name"
     }
 }

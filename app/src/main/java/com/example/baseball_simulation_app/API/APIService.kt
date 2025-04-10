@@ -10,4 +10,7 @@ interface APIService {
 
     @GET("api/get_highlight/{code}")
     suspend fun getHighlights(@Path("code") code: String): Response<HighlightResponse>
+
+    @GET("api/get_lineup/{gameId}")
+    suspend fun getLineups(@Path("gameId") gameId: String): Response<LineupResponse>
 }

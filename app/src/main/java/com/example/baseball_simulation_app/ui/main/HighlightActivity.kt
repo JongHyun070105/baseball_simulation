@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.baseball_simulation_app.API.SubstitutionItem
 import com.example.baseball_simulation_app.R
+import com.example.baseball_simulation_app.data.model.BaseStatus
+import com.example.baseball_simulation_app.data.model.HighlightData
 import com.example.baseball_simulation_app.data.repository.HighlightRepository
 import com.example.baseball_simulation_app.databinding.ActivityHighlightBinding
 import com.example.baseball_simulation_app.databinding.ItemHighlightBinding
@@ -211,6 +213,13 @@ class HighlightActivity : AppCompatActivity() {
                                 putExtra(ChangeMemberActivity.EXTRA_AWAY_TEAM_ID, awayTeamId)
                                 putExtra(ChangeMemberActivity.EXTRA_HOME_TEAM_NAME, homeTeamName)
                                 putExtra(ChangeMemberActivity.EXTRA_AWAY_TEAM_NAME, awayTeamName)
+                                putExtra(ChangeMemberActivity.EXTRA_PITCHER_NAME, substitution.currentPitcher.name)
+                                putExtra(ChangeMemberActivity.EXTRA_BATTER_NAME, substitution.currentHitter.name)
+                                // 하이라이트 데이터 추가
+                                putExtra(ChangeMemberActivity.EXTRA_INNING, inningText)
+                                putExtra(ChangeMemberActivity.EXTRA_OUT_COUNT, substitution.outCount)
+                                putExtra(ChangeMemberActivity.EXTRA_HOME_SCORE, substitution.score.home)
+                                putExtra(ChangeMemberActivity.EXTRA_AWAY_SCORE, substitution.score.away)
                             }
                             context.startActivity(intent)
 
