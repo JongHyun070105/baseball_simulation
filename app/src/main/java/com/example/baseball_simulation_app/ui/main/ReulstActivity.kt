@@ -26,11 +26,13 @@ class ResultActivity : AppCompatActivity() {
         val awayScore = intent.getIntExtra("AWAY_SCORE", 0)
         val stadium = intent.getStringExtra("STADIUM") ?: "야구장"
 
-        // Setup RecyclerView
+        // Setup RecyclerView with fixed size (no scrolling)
         resultAdapter = ResultAdapter()
         binding.rvResults.apply {
             layoutManager = LinearLayoutManager(this@ResultActivity)
             adapter = resultAdapter
+            isNestedScrollingEnabled = false // Disable scrolling
+            setHasFixedSize(true) // Fixed size
         }
 
         // Create and add result item
