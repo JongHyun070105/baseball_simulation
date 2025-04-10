@@ -27,6 +27,7 @@ class ChangeMemberActivity : AppCompatActivity() {
     private var gameId: String = ""
     private var homeTeamName: String = ""
     private var awayTeamName: String = ""
+    private var inning: String = ""
 
     private val apiService = RetrofitClient.apiService
 
@@ -42,7 +43,8 @@ class ChangeMemberActivity : AppCompatActivity() {
         awayTeamName = intent.getStringExtra(EXTRA_AWAY_TEAM_NAME) ?: ""
 
         // 하이라이트 데이터 받기
-        val inning = intent.getStringExtra(EXTRA_INNING) ?: ""
+        inning = intent.getStringExtra(EXTRA_INNING) ?: ""
+
         val outCount = intent.getIntExtra(EXTRA_OUT_COUNT, 0)
         val homeScore = intent.getIntExtra(EXTRA_HOME_SCORE, 0)
         val awayScore = intent.getIntExtra(EXTRA_AWAY_SCORE, 0)
@@ -106,20 +108,20 @@ class ChangeMemberActivity : AppCompatActivity() {
             tvAwayTeamName.text = awayName
 
             // 팀 로고 로딩
-            Glide.with(this@ChangeMemberActivity)
-                .load(homeLogoUrl)
-                .placeholder(R.drawable.placeholder_logo)
-                .into(ivHomeTeamLogo)
-
-            Glide.with(this@ChangeMemberActivity)
-                .load(awayLogoUrl)
-                .placeholder(R.drawable.placeholder_logo)
-                .into(ivAwayTeamLogo)
+//            Glide.with(this@ChangeMemberActivity)
+//                .load(homeLogoUrl)
+//                .placeholder(R.drawable.placeholder_logo)
+//                .into(ivHomeTeamLogo)
+//
+//            Glide.with(this@ChangeMemberActivity)
+//                .load(awayLogoUrl)
+//                .placeholder(R.drawable.placeholder_logo)
+//                .into(ivAwayTeamLogo)
         }
     }
 
     private fun setupRecyclerViewWithApiData(teamLineup: TeamLineup) {
-        val players = convertApiPlayersToAppPlayers(teamLineup)
+        val players = convertApiPlayersToAppPlayers(teamLineup, inning)
         changeMemberAdapter = ChangePlayerAdapter(players)
         binding.rvChangeMembers.apply {
             layoutManager = LinearLayoutManager(this@ChangeMemberActivity)
@@ -127,48 +129,95 @@ class ChangeMemberActivity : AppCompatActivity() {
         }
     }
 
-    private fun convertApiPlayersToAppPlayers(teamLineup: TeamLineup): List<Player> {
-        Log.d("ChangeMemberActivity", teamLineup.team.name)
+    private fun convertApiPlayersToAppPlayers(teamLineup: TeamLineup, inning: String): List<Player> {
         val players = mutableListOf<Player>()
 
-        // 선발, 벤치, 불펜 선수를 모두 리스트에 추가
-        val allPlayers = mutableListOf<com.example.baseball_simulation_app.API.Player>().apply {
-            addAll(teamLineup.startingLineups)
-            addAll(teamLineup.benchLineups)
-            addAll(teamLineup.bullpenLineups)
+        // 현재 투수/타자 정보
+        val currentPitcherName = intent.getStringExtra(EXTRA_PITCHER_NAME) ?: ""
+        val currentBatterName = intent.getStringExtra(EXTRA_BATTER_NAME) ?: ""
+
+        // 이닝 정보로 공격/수비 상황 판단
+        val isOffense = isOffenseSituation(inning, isHomeTeam)
+        Log.d("FilterPlayers", "공격 상황: $isOffense, 이닝: $inning, 홈팀: $isHomeTeam")
+
+        // 공격 상황에서는 타자만, 수비 상황에서는 투수만 필터링
+        val filteredPlayers = if (isOffense) {
+            // 공격 상황: 타자만 필터링 (벤치 선수 중 투수가 아닌 선수)
+            val batters = mutableListOf<com.example.baseball_simulation_app.API.Player>()
+
+            // 벤치 선수만 가져옴 (현재 타자 제외)
+            batters.addAll(teamLineup.benchLineups.filter { player ->
+                val isNotPitcher = player.position?.none { it.contains("투수") } ?: true
+                val isNotCurrentBatter = player.name != currentBatterName
+                isNotPitcher && isNotCurrentBatter
+            })
+
+            batters
+        } else {
+            // 수비 상황: 투수만 필터링 (불펜 투수만, 현재 투수는 제외)
+            teamLineup.bullpenLineups.filter { player ->
+                player.name != currentPitcherName
+            }
         }
 
-        allPlayers.forEach { apiPlayer ->
+        Log.d("FilterPlayers", "필터링된 선수 수: ${filteredPlayers.size}")
+        Log.d("FilterPlayers", "필터링된 선수 목록: ${filteredPlayers.map { it.name }}")
+
+        // API 응답 선수를 앱 모델로 변환
+        filteredPlayers.forEach { apiPlayer ->
             try {
-                players.add(
-                    Player(
-                        name = apiPlayer.name,
-                        position = apiPlayer.position?.joinToString("/") ?: "미정",
-                        playerImageUrl = apiPlayer.imageUrl ?: "",
-                        isHomeTeam = isHomeTeam,
+                val player = Player(
+                    name = apiPlayer.name,
+                    position = apiPlayer.position?.joinToString("/") ?: "미정",
+                    playerImageUrl = apiPlayer.stats?.imageUrl ?: "", // 선수 이미지 URL
+                    isHomeTeam = isHomeTeam,
 
-                        // 안전한 변환 함수 사용
-                        battingAverage = safeStringToDouble(apiPlayer.stats?.battingAverage),
-                        hits = safeStringToInt(apiPlayer.stats?.hits),
-                        onBasePercentage = safeStringToDouble(apiPlayer.stats?.onBasePercentage),
-                        homeRuns = safeStringToInt(apiPlayer.stats?.homeRuns),
-                        sluggingPercentage = safeStringToDouble(apiPlayer.stats?.sluggingPercentage),
-                        rbi = safeStringToInt(apiPlayer.stats?.rbi),
+                    // 타자 스탯
+                    battingAverage = safeStringToDouble(apiPlayer.stats?.battingAverage),
+                    hits = safeStringToInt(apiPlayer.stats?.hits),
+                    onBasePercentage = safeStringToDouble(apiPlayer.stats?.onBasePercentage),
+                    homeRuns = safeStringToInt(apiPlayer.stats?.homeRuns),
+                    sluggingPercentage = safeStringToDouble(apiPlayer.stats?.sluggingPercentage),
+                    rbi = safeStringToInt(apiPlayer.stats?.rbi),
 
-                        era = safeStringToDouble(apiPlayer.stats?.era),
-                        inningsPitched = safeStringToDouble(apiPlayer.stats?.innings),
-                        wins = safeStringToInt(apiPlayer.stats?.wins),
-                        losses = safeStringToInt(apiPlayer.stats?.losses),
-                        holds = safeStringToInt(apiPlayer.stats?.holds),
-                        saves = safeStringToInt(apiPlayer.stats?.saves)
-                    )
+                    // 투수 스탯
+                    era = safeStringToDouble(apiPlayer.stats?.era),
+                    inningsPitched = safeStringToDouble(apiPlayer.stats?.innings),
+                    wins = safeStringToInt(apiPlayer.stats?.wins),
+                    losses = safeStringToInt(apiPlayer.stats?.losses),
+                    holds = safeStringToInt(apiPlayer.stats?.holds),
+                    saves = safeStringToInt(apiPlayer.stats?.saves)
                 )
+                players.add(player)
+
+                // 선수 이미지 URL 로그
+                Log.d("ChangeMemberActivity", "선수 ${player.name} 이미지: ${player.playerImageUrl}")
             } catch (e: Exception) {
                 Log.e("ChangeMemberActivity", "선수 변환 오류: ${e.message}", e)
             }
         }
 
         return players
+    }
+
+    /**
+     * 이닝 정보와 팀 정보를 바탕으로 현재 공격 상황인지 판단
+     * @param inning 이닝 정보 (예: "3회초" 또는 "5회말")
+     * @param isHomeTeam 홈팀 여부
+     * @return 공격 상황이면 true, 수비 상황이면 false
+     */
+    private fun isOffenseSituation(inning: String, isHomeTeam: Boolean): Boolean {
+        // 이닝이 비어있으면 기본적으로 원래 로직대로 처리
+        if (inning.isEmpty()) return isHomeTeam
+
+        // "회초"는 원정팀 공격, "회말"은 홈팀 공격
+        val isAwayTeamOffense = inning.contains("회초")
+
+        // 홈팀이면서 원정팀 공격 상황이면 수비(false)
+        // 홈팀이면서 홈팀 공격 상황이면 공격(true)
+        // 원정팀이면서 원정팀 공격 상황이면 공격(true)
+        // 원정팀이면서 홈팀 공격 상황이면 수비(false)
+        return if (isHomeTeam) !isAwayTeamOffense else isAwayTeamOffense
     }
 
     private fun safeStringToDouble(value: String?): Double? {
@@ -198,19 +247,17 @@ class ChangeMemberActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupHighlightData(inning: String, outCount: Int, homeScore: Int, awayScore: Int, pitcherName: String, batterName: String) {
+    private fun setupHighlightData(inning: String, outCount: Int, homeScore: Int, awayScore: Int,
+                                  pitcherName: String, batterName: String) {
         binding.highlightSection.apply {
-            // 이닝 설정
+            // 이닝과 점수 설정
             tvInning.text = inning
-
-            // 팀 이름 설정
             tvHomeTeamName.text = homeTeamName
             tvAwayTeamName.text = awayTeamName
-
-            // 점수 설정
             tvHomeScore.text = homeScore.toString()
             tvAwayScore.text = awayScore.toString()
 
+            // 선수 이름 표시
             if (isHomeTeam) {
                 tvAwayPlayerInfo.text = pitcherName  // 어웨이팀 투수
                 tvHomePlayerInfo.text = batterName    // 홈팀 타자
@@ -219,7 +266,24 @@ class ChangeMemberActivity : AppCompatActivity() {
                 tvAwayPlayerInfo.text = pitcherName   // 어웨이팀 타자
             }
 
-            // 아웃카운트 설정
+            // 선수 이미지 URL 가져오기
+            val pitcherImageUrl = intent.getStringExtra(EXTRA_PITCHER_IMAGE_URL)
+            val batterImageUrl = intent.getStringExtra(EXTRA_BATTER_IMAGE_URL)
+
+            // 선수 이미지 설정 (팀 로고 대신)
+            Glide.with(this@ChangeMemberActivity)
+                .load(batterImageUrl)
+                .placeholder(R.drawable.placeholder_logo)
+                .error(R.drawable.placeholder_logo)
+                .into(ivHomeTeamLogo)
+
+            Glide.with(this@ChangeMemberActivity)
+                .load(pitcherImageUrl)
+                .placeholder(R.drawable.placeholder_logo)
+                .error(R.drawable.placeholder_logo)
+                .into(ivAwayTeamLogo)
+
+            // 아웃 카운트 설정
             when (outCount) {
                 0 -> {
                     ivOut1.setBackgroundResource(R.drawable.out_empty)
@@ -323,5 +387,7 @@ class ChangeMemberActivity : AppCompatActivity() {
         const val EXTRA_AWAY_SCORE = "extra_away_score"
         const val EXTRA_PITCHER_NAME = "extra_pitcher_name"
         const val EXTRA_BATTER_NAME = "extra_batter_name"
+        const val EXTRA_PITCHER_IMAGE_URL = "extra_pitcher_image_url"
+        const val EXTRA_BATTER_IMAGE_URL = "extra_batter_image_url"
     }
 }

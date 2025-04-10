@@ -32,6 +32,7 @@ data class Player(
 
 data class Stats(
     val name: String? = null,
+    val imageUrl: String? = null,
     // 타자 스탯
     @SerializedName("타율") val battingAverage: String? = null,
     val OPS: String? = null,

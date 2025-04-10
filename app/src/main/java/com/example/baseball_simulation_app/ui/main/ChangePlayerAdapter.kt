@@ -1,6 +1,7 @@
 package com.example.baseball_simulation_app.ui.main
 
 import android.content.Intent
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -87,6 +88,8 @@ class ChangePlayerAdapter(
                     .placeholder(R.drawable.placeholder_logo)
                     .error(R.drawable.placeholder_logo)
                     .into(ivPlayerImage)
+
+                Log.d("PlayerAdapter", "Player Image URL: ${player.playerImageUrl}")
 
                 root.setOnClickListener {
                     val context = it.context

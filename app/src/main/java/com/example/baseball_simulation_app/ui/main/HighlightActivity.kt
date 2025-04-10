@@ -151,8 +151,8 @@ class HighlightActivity : AppCompatActivity() {
                         tvInning.text = inningText
 
                         // 팀 이름 (displayName 사용)
-                        tvHomeTeamName.text = homeTeamName
-                        tvAwayTeamName.text = awayTeamName
+                        tvAwayTeamName.text = if (isHomeTeam) homeTeamName else awayTeamName // 투수 팀
+                        tvHomeTeamName.text = if (isHomeTeam) awayTeamName else  homeTeamName// 타자 팀
 
                         // 투수와 타자 정보
                         tvHomePlayerInfo.text = substitution.currentHitter.name
@@ -220,6 +220,8 @@ class HighlightActivity : AppCompatActivity() {
                                 putExtra(ChangeMemberActivity.EXTRA_OUT_COUNT, substitution.outCount)
                                 putExtra(ChangeMemberActivity.EXTRA_HOME_SCORE, substitution.score.home)
                                 putExtra(ChangeMemberActivity.EXTRA_AWAY_SCORE, substitution.score.away)
+                                putExtra(ChangeMemberActivity.EXTRA_PITCHER_IMAGE_URL, substitution.currentPitcher.imageUrl)
+                                putExtra(ChangeMemberActivity.EXTRA_BATTER_IMAGE_URL, substitution.currentHitter.imageUrl)
                             }
                             context.startActivity(intent)
 

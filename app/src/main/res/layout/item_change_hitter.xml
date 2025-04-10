@@ -10,7 +10,7 @@
     <!-- 선수 이미지 -->
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivPlayerImage"
-        android:layout_width="89dp"
+        android:layout_width="90dp"
         android:layout_height="90dp"
         android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
