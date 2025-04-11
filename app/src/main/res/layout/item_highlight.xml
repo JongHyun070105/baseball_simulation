@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--item_highlight.xml-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,12 +16,11 @@
         android:background="@drawable/card_background"
         android:padding="24dp">
 
-        <!-- 이닝 표시 -->
         <TextView
             android:id="@+id/tvInning"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="5\ud68c\ucd08"
+            android:text="5회초"
             android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold"
@@ -34,7 +32,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <!-- 로고와 스코어 영역 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/scoreLayout"
             android:layout_width="match_parent"
@@ -44,7 +41,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent">
 
-            <!-- 어웨이팀 로고 (원래 홈팀 위치) -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivAwayTeamLogo"
                 android:layout_width="85dp"
@@ -55,9 +51,8 @@
                 app:shapeAppearanceOverlay="@style/circleImageView"
                 tools:src="@drawable/placeholder_logo" />
 
-            <!-- 어웨이 점수 (원래 홈 점수 위치) -->
             <TextView
-                android:id="@+id/tvHomeScore"
+                android:id="@+id/tvAwayScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
@@ -69,7 +64,6 @@
                 app:layout_constraintStart_toEndOf="@id/ivAwayTeamLogo"
                 app:layout_constraintTop_toTopOf="@id/ivAwayTeamLogo" />
 
-            <!-- 점수 구분 -->
             <TextView
                 android:id="@+id/tvScoreDivider"
                 android:layout_width="wrap_content"
@@ -78,14 +72,11 @@
                 android:textColor="@color/black"
                 android:textSize="42sp"
                 android:textStyle="bold"
-                app:layout_constraintStart_toEndOf="@id/tvHomeScore"
-                app:layout_constraintEnd_toStartOf="@id/tvAwayScore"
-                app:layout_constraintTop_toTopOf="@id/tvHomeScore"
-                app:layout_constraintBottom_toBottomOf="@id/tvHomeScore" />
+                app:layout_constraintStart_toEndOf="@id/tvAwayScore" app:layout_constraintEnd_toStartOf="@id/tvHomeScore" app:layout_constraintTop_toTopOf="@id/tvAwayScore"
+                app:layout_constraintBottom_toBottomOf="@id/tvAwayScore" />
 
-            <!-- 홈 점수 (원래 어웨이 점수 위치) -->
             <TextView
-                android:id="@+id/tvAwayScore"
+                android:id="@+id/tvHomeScore"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="24dp"
@@ -93,11 +84,10 @@
                 android:textColor="@color/black"
                 android:textSize="42sp"
                 android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="@id/tvHomeScore"
+                app:layout_constraintBottom_toBottomOf="@id/tvAwayScore"
                 app:layout_constraintEnd_toStartOf="@id/ivHomeTeamLogo"
-                app:layout_constraintTop_toTopOf="@id/tvHomeScore" />
+                app:layout_constraintTop_toTopOf="@id/tvAwayScore" />
 
-            <!-- 홈팀 로고 (원래 어웨이팀 위치) -->
             <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/ivHomeTeamLogo"
                 android:layout_width="85dp"
@@ -107,7 +97,6 @@
                 app:shapeAppearanceOverlay="@style/circleImageView"
                 tools:src="@drawable/placeholder_logo" />
 
-            <!-- 어웨이팀 이름 (원래 홈팀 위치) -->
             <TextView
                 android:id="@+id/tvAwayTeamName"
                 android:layout_width="wrap_content"
@@ -117,119 +106,111 @@
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="@id/ivAwayTeamLogo"
-                app:layout_constraintStart_toStartOf="@id/ivAwayTeamLogo"
-                app:layout_constraintTop_toBottomOf="@id/ivAwayTeamLogo" />
+                app:layout_constraintEnd_toEndOf="@id/ivAwayTeamLogo" app:layout_constraintStart_toStartOf="@id/ivAwayTeamLogo" app:layout_constraintTop_toBottomOf="@id/ivAwayTeamLogo" />
 
-            <!-- 홈팀 이름 (원래 어웨이팀 위치) -->
             <TextView
                 android:id="@+id/tvHomeTeamName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="\uc5d8\uc9c0"
+                android:text="엘지"
                 android:textColor="@color/black"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="@id/ivHomeTeamLogo"
+                app:layout_constraintHorizontal_bias="0.509"
                 app:layout_constraintStart_toStartOf="@id/ivHomeTeamLogo"
                 app:layout_constraintTop_toBottomOf="@id/ivHomeTeamLogo" />
 
-            <!-- 베이스와 아웃카운트를 가로로 배치하는 컨테이너 -->
             <LinearLayout
-                android:id="@+id/baseAndOutCountContainer"
+            android:id="@+id/baseAndOutCountContainer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tvScoreDivider"
+            android:layout_marginTop="12dp">
+
+            <LinearLayout
+                android:id="@+id/baseLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvScoreDivider"
-                android:layout_marginTop="12dp">
+                android:orientation="vertical"
+                android:layout_marginEnd="0dp"
+                android:paddingHorizontal="4dp">
 
-                <!-- 베이스 레이아웃 - 크기 축소 -->
+                <ImageView
+                    android:id="@+id/ivSecondBase"
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="-2dp"
+                    android:background="@drawable/base_empty" />
+
                 <LinearLayout
-                    android:id="@+id/baseLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_marginEnd="0dp"
-                    android:paddingHorizontal="4dp">
+                    android:orientation="horizontal">
 
-                    <!-- 상단 베이스 (2루) - 크기 축소 -->
                     <ImageView
-                        android:id="@+id/ivSecondBase"
+                        android:id="@+id/ivThirdBase"
                         android:layout_width="22dp"
                         android:layout_height="22dp"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_marginBottom="-2dp"
-                        android:background="@drawable/base_empty" />
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/base_empty"
+                        />
 
-                    <!-- 하단 베이스 (1루, 3루) - 크기 축소 및 간격 증가 -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:id="@+id/ivThirdBase"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_marginEnd="8dp"
-                            android:background="@drawable/base_empty"
-                            />
-
-                        <ImageView
-                            android:id="@+id/ivFirstBase"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
-                            android:layout_marginStart="8dp"
-                            android:background="@drawable/base_fill" />
-                    </LinearLayout>
-                </LinearLayout>
-
-                <!-- 아웃카운트 영역 - 변경 없음 -->
-                <LinearLayout
-                    android:id="@+id/outCountLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:layout_marginStart="10dp">
-
-                    <TextView
-                        android:id="@+id/tvOutLabel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="OUT"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black" />
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="0dp">
-
-                        <View
-                            android:id="@+id/ivOut1"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_margin="4dp"
-                            android:background="@drawable/out_fill" />
-
-                        <View
-                            android:id="@+id/ivOut2"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:layout_margin="4dp"
-                            android:background="@drawable/out_empty" />
-                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/ivFirstBase"
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/base_fill" />
                 </LinearLayout>
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/outCountLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginStart="10dp">
+
+                <TextView
+                    android:id="@+id/tvOutLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OUT"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="0dp">
+
+                    <View
+                        android:id="@+id/ivOut1"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/out_fill" />
+
+                    <View
+                        android:id="@+id/ivOut2"
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:layout_margin="4dp"
+                        android:background="@drawable/out_empty" />
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- 타자/투수 정보 및 플레이 버튼 영역 -->
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/playerInfoLayout"
             android:layout_width="match_parent"
@@ -240,7 +221,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- 투수 영역 (원래 타자 위치) -->
             <LinearLayout
                 android:id="@+id/awayPlayerLayout"
                 android:layout_width="wrap_content"
@@ -265,12 +245,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="\uace0\uc601\ud45c"
+                    android:text="고영표"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
             </LinearLayout>
 
-            <!-- 플레이 버튼 -->
             <Button
                 android:id="@+id/btnPlay"
                 android:layout_width="88dp"
@@ -286,7 +265,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 />
 
-            <!-- 타자 영역 (원래 투수 위치) -->
             <LinearLayout
                 android:id="@+id/homePlayerLayout"
                 android:layout_width="wrap_content"
@@ -311,7 +289,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="\uae40\ud604\uc218"
+                    android:text="김현수"
                     android:textColor="@color/black"
                     android:textSize="18sp" />
             </LinearLayout>
