@@ -175,8 +175,17 @@ class HighlightActivity : AppCompatActivity() {
                         }
 
                         // 점수 표시
-                        tvHomeScore.text = if (isHomeTeam) substitution.score.home.toString() else substitution.score.away.toString()
-                        tvAwayScore.text = if (isHomeTeam) substitution.score.away.toString() else substitution.score.home.toString()
+                       // 점수 표시 로직을 수정
+                        // 왼쪽은 투수 팀, 오른쪽은 타자 팀이어야 함
+                        if (!isHomeTeam) {
+                            // 홈팀 선택 시: 투수는 어웨이팀(왼쪽), 타자는 홈팀(오른쪽)
+                            tvAwayScore.text = substitution.score.away.toString()  // 왼쪽(투수) = 어웨이팀
+                            tvHomeScore.text = substitution.score.home.toString()  // 오른쪽(타자) = 홈팀
+                        } else {
+                            // 어웨이팀 선택 시: 투수는 홈팀(왼쪽), 타자는 어웨이팀(오른쪽)
+                            tvAwayScore.text = substitution.score.home.toString()  // 왼쪽(투수) = 홈팀
+                            tvHomeScore.text = substitution.score.away.toString()  // 오른쪽(타자) = 어웨이팀
+                        }
 
                         // 베이스 상태 표시
                         // TODO: 백엔드 기능이 완성되면 추가될 예정

@@ -216,10 +216,10 @@ class ChangeMemberActivity : AppCompatActivity() {
         this.awayTeamName = awayName
 
         // 하이라이트 섹션의 팀 이름 재설정 (레이아웃 ID 수정되었으므로 직접 할당)
-        binding.highlightSection.apply {
-            tvHomeTeamName.text = this@ChangeMemberActivity.homeTeamName // 오른쪽 TextView에 홈 이름
-            tvAwayTeamName.text = this@ChangeMemberActivity.awayTeamName // 왼쪽에 어웨이 이름
-        }
+//        binding.highlightSection.apply {
+//            tvHomeTeamName.text = this@ChangeMemberActivity.homeTeamName // 오른쪽 TextView에 홈 이름
+//            tvAwayTeamName.text = this@ChangeMemberActivity.awayTeamName // 왼쪽에 어웨이 이름
+//        }
 
         Log.d("ChangeMemberActivity", "Team names updated in highlight: Left=${this.awayTeamName}, Right=${this.homeTeamName}")
     }
@@ -416,38 +416,45 @@ class ChangeMemberActivity : AppCompatActivity() {
         outCount: Int,
         homeScore: Int,
         awayScore: Int,
-        pitcherNameToDisplay: String,
-        batterNameToDisplay: String,
-        pitcherImageUrlToDisplay: String,
-        batterImageUrlToDisplay: String,
+        pitcherName: String,
+        batterName: String,
+        pitcherImageUrl: String,
+        batterImageUrl: String,
         baseStatus: BaseStatus?
     ) {
         binding.highlightSection.apply {
+            btnPlay.visibility = View.GONE // 플레이 버튼 숨김
             tvInning.text = inning
 
-            // 항상 어웨이팀 정보를 왼쪽, 홈팀 정보를 오른쪽에 표시
-            tvAwayTeamName.text = this@ChangeMemberActivity.awayTeamName
-            tvHomeTeamName.text = this@ChangeMemberActivity.homeTeamName
-            tvAwayScore.text = currentAwayScore.toString()
-            tvHomeScore.text = currentHomeScore.toString()
+            // 팀 이름 설정
+            // 팀 이름 설정 - 점수 표시 로직과 일치시킴
+            if (!isHomeTeam) {
+                // 홈팀 선택 시: 왼쪽은 어웨이팀, 오른쪽은 홈팀
+                tvAwayTeamName.text = awayTeamName  // 왼쪽 = 어웨이팀
+                tvHomeTeamName.text = homeTeamName  // 오른쪽 = 홈팀
+            } else {
+                // 어웨이팀 선택 시: 왼쪽은 홈팀, 오른쪽은 어웨이팀
+                tvAwayTeamName.text = homeTeamName  // 왼쪽 = 홈팀
+                tvHomeTeamName.text = awayTeamName  // 오른쪽 = 어웨이팀
+            }
 
-            tvAwayPlayerInfo.text = pitcherNameToDisplay
-            tvHomePlayerInfo.text = batterNameToDisplay
+            // 점수 표시 수정
+            // 항상 왼쪽은 투수 팀, 오른쪽은 타자 팀
+            if (! isHomeTeam) {
+                // 홈팀 선택 시: 투수는 어웨이팀(왼쪽), 타자는 홈팀(오른쪽)
+                tvAwayScore.text = awayScore.toString()  // 왼쪽(투수) = 어웨이팀
+                tvHomeScore.text = homeScore.toString()  // 오른쪽(타자) = 홈팀
+            } else {
+                // 어웨이팀 선택 시: 투수는 홈팀(왼쪽), 타자는 어웨이팀(오른쪽)
+                tvAwayScore.text = homeScore.toString()  // 왼쪽(투수) = 홈팀
+                tvHomeScore.text = awayScore.toString()  // 오른쪽(타자) = 어웨이팀
+            }
 
-            Glide.with(this@ChangeMemberActivity)
-                .load(batterImageUrlToDisplay.ifBlank { R.drawable.placeholder_logo })
-                .placeholder(R.drawable.placeholder_logo)
-                .error(R.drawable.placeholder_logo)
-                .circleCrop()
-                .into(ivHomeTeamLogo)
+            // 선수 이름 설정
+            tvHomePlayerInfo.text = batterName
+            tvAwayPlayerInfo.text = pitcherName
 
-            Glide.with(this@ChangeMemberActivity)
-                .load(pitcherImageUrlToDisplay.ifBlank { R.drawable.placeholder_logo })
-                .placeholder(R.drawable.placeholder_logo)
-                .error(R.drawable.placeholder_logo)
-                .circleCrop()
-                .into(ivAwayTeamLogo)
-
+            // 아웃 카운트 설정
             when (outCount) {
                 0 -> {
                     ivOut1.setBackgroundResource(R.drawable.out_empty)
@@ -460,19 +467,37 @@ class ChangeMemberActivity : AppCompatActivity() {
                 2 -> {
                     ivOut1.setBackgroundResource(R.drawable.out_fill)
                     ivOut2.setBackgroundResource(R.drawable.out_fill)
-
-                }
-                else -> {
-                    ivOut1.setBackgroundResource(R.drawable.out_empty)
-                    ivOut2.setBackgroundResource(R.drawable.out_empty)
                 }
             }
 
-            ivFirstBase.setBackgroundResource(if (baseStatus?.first == true) R.drawable.base_fill else R.drawable.base_empty)
-            ivSecondBase.setBackgroundResource(if (baseStatus?.second == true) R.drawable.base_fill else R.drawable.base_empty)
-            ivThirdBase.setBackgroundResource(if (baseStatus?.third == true) R.drawable.base_fill else R.drawable.base_empty)
+            // 선수 이미지 로딩
+            Glide.with(this@ChangeMemberActivity)
+                .load(batterImageUrl)
+                .placeholder(R.drawable.placeholder_logo)
+                .error(R.drawable.placeholder_logo)
+                .into(ivHomeTeamLogo)
 
-            btnPlay.visibility = View.GONE
+            Glide.with(this@ChangeMemberActivity)
+                .load(pitcherImageUrl)
+                .placeholder(R.drawable.placeholder_logo)
+                .error(R.drawable.placeholder_logo)
+                .into(ivAwayTeamLogo)
+
+            // 베이스 상태 설정 (있을 경우)
+//            baseStatus?.let {
+//                ivFirstBase.background = resources.getDrawable(
+//                    if (it.first) R.drawable.base_fill else R.drawable.base_empty,
+//                    null
+//                )
+//                ivSecondBase.background = resources.getDrawable(
+//                    if (it.second) R.drawable.base_fill else R.drawable.base_empty,
+//                    null
+//                )
+//                ivThirdBase.background = resources.getDrawable(
+//                    if (it.third) R.drawable.base_fill else R.drawable.base_empty,
+//                    null
+//                )
+//            }
         }
     }
 

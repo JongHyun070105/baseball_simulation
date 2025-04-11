@@ -158,13 +158,24 @@ class MyPickActivity : AppCompatActivity() {
             tvInning.text = inning
 
             // 항상 어웨이팀 정보를 왼쪽, 홈팀 정보를 오른쪽에 표시
-            tvAwayTeamName.text = awayTeamName
-            tvHomeTeamName.text = homeTeamName
-            tvAwayScore.text = awayScore.toString()
-            tvHomeScore.text = homeScore.toString()
+            // 팀 이름과 점수 설정
+            if (!isHomeTeamSelected) {
+                // 홈팀 선택 시: 왼쪽은 어웨이팀, 오른쪽은 홈팀
+                tvAwayTeamName.text = awayTeamName  // 왼쪽 = 어웨이팀
+                tvHomeTeamName.text = homeTeamName  // 오른쪽 = 홈팀
+                tvAwayScore.text = awayScore.toString()  // 왼쪽 = 어웨이팀
+                tvHomeScore.text = homeScore.toString()  // 오른쪽 = 홈팀
+            } else {
+                // 어웨이팀 선택 시: 왼쪽은 홈팀, 오른쪽은 어웨이팀
+                tvAwayTeamName.text = homeTeamName  // 왼쪽 = 홈팀
+                tvHomeTeamName.text = awayTeamName  // 오른쪽 = 어웨이팀
+                tvAwayScore.text = homeScore.toString()  // 왼쪽 = 홈팀
+                tvHomeScore.text = awayScore.toString()  // 오른쪽 = 어웨이팀
+            }
 
-            tvAwayPlayerInfo.text = highlightPitcherName
-            tvHomePlayerInfo.text = highlightBatterName
+            // 투수/타자 정보 순서도 일관되게 유지
+            tvAwayPlayerInfo.text = highlightPitcherName  // 왼쪽(투수)
+            tvHomePlayerInfo.text = highlightBatterName   // 오른쪽(타자)
 
             Glide.with(this@MyPickActivity)
                 .load(highlightBatterImageUrl.ifBlank { R.drawable.placeholder_logo })
