@@ -18,7 +18,7 @@ data class Player(
 
     // 투수 스탯
     val era: Double? = null,
-    val inningsPitched: Double? = null,
+    val inningsPitched: String? = null,
     val wins: Int? = null,
     val losses: Int? = null,
     val holds: Int? = null,

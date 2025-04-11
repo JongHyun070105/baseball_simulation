@@ -182,7 +182,7 @@ class ChangeMemberActivity : AppCompatActivity() {
 
                     // 투수 스탯
                     era = safeStringToDouble(apiPlayer.stats?.era),
-                    inningsPitched = safeStringToDouble(apiPlayer.stats?.innings),
+                    inningsPitched = apiPlayer.stats?.innings,
                     wins = safeStringToInt(apiPlayer.stats?.wins),
                     losses = safeStringToInt(apiPlayer.stats?.losses),
                     holds = safeStringToInt(apiPlayer.stats?.holds),

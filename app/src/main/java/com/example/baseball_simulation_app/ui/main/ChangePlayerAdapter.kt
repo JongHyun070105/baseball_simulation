@@ -66,6 +66,7 @@ class ChangePlayerAdapter(
                     val intent = Intent(context, MyPickActivity::class.java).apply {
                         putExtra("selected_player", player)
                     }
+//                    Log.d("sibal", player.name)
                     context.startActivity(intent)
                 }
             }
@@ -89,9 +90,8 @@ class ChangePlayerAdapter(
                     .error(R.drawable.placeholder_logo)
                     .into(ivPlayerImage)
 
-                Log.d("PlayerAdapter", "Player Image URL: ${player.playerImageUrl}")
-
                 root.setOnClickListener {
+                    Log.d("sibal", "${player.name} clicked")
                     val context = it.context
                     val intent = Intent(context, MyPickActivity::class.java).apply {
                         putExtra("selected_player", player)

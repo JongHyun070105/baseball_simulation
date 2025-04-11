@@ -1,7 +1,9 @@
 package com.example.baseball_simulation_app.ui.main
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
@@ -9,6 +11,7 @@ import com.example.baseball_simulation_app.R
 import com.example.baseball_simulation_app.data.model.Player
 import com.example.baseball_simulation_app.databinding.ActivityMypickBinding
 import android.view.View  // 추가해줘야 함 (View.GONE 쓰려고)
+import androidx.annotation.RequiresApi
 
 class MyPickActivity : AppCompatActivity() {
 
@@ -33,9 +36,10 @@ class MyPickActivity : AppCompatActivity() {
 
     private fun getIntentData() {
         // Get players from intent
-        batterPlayer = intent.getSerializableExtra("selected_batter") as? Player
-        pitcherPlayer = intent.getSerializableExtra("selected_pitcher") as? Player
+        batterPlayer = intent.getSerializableExtra("selected_batter", Player::class.java)
+        pitcherPlayer = intent.getSerializableExtra("selected_pitcher", Player::class.java)
 
+        Log.d("gasibal", "selected_pitcher: $pitcherPlayer")
         // If no players were passed, create sample data
         if (batterPlayer == null) {
             batterPlayer = Player(
@@ -63,7 +67,7 @@ class MyPickActivity : AppCompatActivity() {
                 losses = 2,
                 holds = 47,
                 saves = 1,
-                inningsPitched = 150.2
+                inningsPitched = "150.2"
             )
         }
     }
