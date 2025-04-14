@@ -99,28 +99,28 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:paddingHorizontal="12dp"
-                android:paddingVertical="8dp">
+<!--            <LinearLayout-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center_vertical"-->
+<!--                android:paddingHorizontal="12dp"-->
+<!--                android:paddingVertical="8dp">-->
 
-                <TextView
-                    android:id="@+id/tvTeamFilter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="선호 구단"
-                    android:textColor="@color/black"
-                    android:textSize="16sp" />
+<!--                <TextView-->
+<!--                    android:id="@+id/tvTeamFilter"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="선호 구단"-->
+<!--                    android:textColor="@color/black"-->
+<!--                    android:textSize="16sp" />-->
 
-                <ImageView
-                    android:layout_width="16dp"
-                    android:layout_height="16dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_dropdown"
-                    app:tint="@color/black" />
-            </LinearLayout>
+<!--                <ImageView-->
+<!--                    android:layout_width="16dp"-->
+<!--                    android:layout_height="16dp"-->
+<!--                    android:layout_marginStart="8dp"-->
+<!--                    android:src="@drawable/ic_dropdown"-->
+<!--                    app:tint="@color/black" />-->
+<!--            </LinearLayout>-->
         </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 

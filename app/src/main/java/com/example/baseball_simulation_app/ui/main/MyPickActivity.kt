@@ -3,6 +3,8 @@ package com.example.baseball_simulation_app.ui.main
 import android.content.Intent
 import android.os.Build // Build 버전 체크 추가
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -13,7 +15,11 @@ import com.example.baseball_simulation_app.data.model.BaseStatus
 import com.example.baseball_simulation_app.data.model.Player
 import com.example.baseball_simulation_app.databinding.ActivityMypickBinding
 
+
 class MyPickActivity : AppCompatActivity() {
+
+    private val handler = Handler(Looper.getMainLooper())
+    private var progress = 0
 
     private lateinit var binding: ActivityMypickBinding
 
@@ -219,36 +225,79 @@ class MyPickActivity : AppCompatActivity() {
     }
 
 
-    // '시작' 버튼 리스너 설정
-    private fun setupStartButton() {
-        binding.btnStart.setOnClickListener {
-            // 비교 섹션의 선수 데이터 유효성 검사
-            if (batterPlayer == null || pitcherPlayer == null) {
-                Toast.makeText(this, "선수 정보가 올바르지 않습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
-                Log.e("MyPickActivity", "Start button clicked but player data for comparison is missing. Batter: ${batterPlayer?.name}, Pitcher: ${pitcherPlayer?.name}")
-                return@setOnClickListener
-            }
-
-            Log.d("MyPickActivity", "시뮬레이션 시작 버튼 클릭: Batter=${batterPlayer!!.name}, Pitcher=${pitcherPlayer!!.name}")
-
-            // ResultActivity로 데이터 전달 및 시작 (SimulationActivity 대신)
-            val intent = Intent(this, ResultActivity::class.java).apply {
-                // 선수 정보 전달 (비교 섹션의 선수들)
-                putExtra("BATTER_PLAYER", batterPlayer) // 선택/교체된 타자
-                putExtra("PITCHER_PLAYER", pitcherPlayer) // 선택/교체된 투수
-
-                // 게임 컨텍스트 정보 전달
-                putExtra("HOME_TEAM_NAME", homeTeamName)
-                putExtra("AWAY_TEAM_NAME", awayTeamName)
-                putExtra("HOME_SCORE", homeScore) // 현재 점수 전달
-                putExtra("AWAY_SCORE", awayScore) // 현재 점수 전달
-                // TODO: 실제 경기장 정보 가져오기
-                val stadiumName = "경기장 정보 필요" // 실제 경기장 이름 가져오는 로직 추가 필요
-                putExtra("STADIUM", stadiumName)
-                // 필요하다면 gameId, 이닝, 아웃카운트 등 추가 정보 전달 가능
-            }
-            startActivity(intent)
-            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left) // 화면 전환 애니메이션
+    // MyPickActivity.kt의 setupStartButton() 메서드 수정
+// MyPickActivity.kt의 setupStartButton() 메서드 수정
+private fun setupStartButton() {
+    binding.btnStart.setOnClickListener {
+        // 비교 섹션의 선수 데이터 유효성 검사
+        if (batterPlayer == null || pitcherPlayer == null) {
+            Toast.makeText(this, "선수 정보가 올바르지 않습니다. 다시 선택해주세요.", Toast.LENGTH_SHORT).show()
+            Log.e("MyPickActivity", "Start button clicked but player data for comparison is missing. Batter: ${batterPlayer?.name}, Pitcher: ${pitcherPlayer?.name}")
+            return@setOnClickListener
         }
+
+        Log.d("MyPickActivity", "시뮬레이션 시작 버튼 클릭: Batter=${batterPlayer!!.name}, Pitcher=${pitcherPlayer!!.name}")
+
+        // 로딩 오버레이 표시
+        binding.loadingOverlay.visibility = View.VISIBLE
+
+        // 로딩 메시지 순서
+        val loadingMessages = arrayOf(
+            "경기 데이터 분석 중...",
+            "승률 계산 중...",
+            "결과 렌더링 중..."
+        )
+
+        // Handler 초기화 (클래스 멤버 변수로 추가 필요)
+        val handler = Handler(Looper.getMainLooper())
+
+        // 10초 동안 프로그레스바 진행
+        var progress = 0
+        val progressRunnable = object : Runnable {
+            override fun run() {
+                if (progress >= 100) {
+                    // 프로그레스 완료 후 ResultActivity로 이동
+                    val intent = Intent(this@MyPickActivity, ResultActivity::class.java).apply {
+                        // 선수 정보 전달 (비교 섹션의 선수들)
+                        putExtra("BATTER_PLAYER", batterPlayer)
+                        putExtra("PITCHER_PLAYER", pitcherPlayer)
+
+                        // 게임 컨텍스트 정보 전달
+                        putExtra("HOME_TEAM_NAME", homeTeamName)
+                        putExtra("AWAY_TEAM_NAME", awayTeamName)
+                        putExtra("HOME_SCORE", homeScore)
+                        putExtra("AWAY_SCORE", awayScore)
+
+                        // 하이라이트 정보에서 스타디움 정보 가져오기
+                        putExtra("STADIUM", "광주") // 기본값 설정
+
+                        // 팀 로고 (기본값 설정)
+                        putExtra("HOME_TEAM_LOGO", "kia")
+                        putExtra("AWAY_TEAM_LOGO", "kiwoom")
+                    }
+                    startActivity(intent)
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left)
+                    return
+                }
+
+                // 프로그레스바 업데이트
+                progress += 1
+                binding.progressBar.progress = progress
+
+                // 로딩 메시지 변경
+                when (progress) {
+                    1 -> binding.tvLoadingMessage.text = loadingMessages[0]
+                    33 -> binding.tvLoadingMessage.text = loadingMessages[1]
+                    66 -> binding.tvLoadingMessage.text = loadingMessages[2]
+                }
+
+                // 0.1초마다 업데이트 (10초 = 100회)
+                handler.postDelayed(this, 100)
+            }
+        }
+
+        // 프로그레스바 시작
+        handler.post(progressRunnable)
     }
+}
 }

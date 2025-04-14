@@ -1,351 +1,419 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white"
-    tools:context=".ui.main.MyPickActivity">
-
-    <!-- Top bar -->
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/topBarLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="16dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="Back"
-            android:src="@drawable/ic_arrow_left"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvMyPickTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="내 선택 비교"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <ScrollView
-        android:id="@+id/svContent"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:fillViewport="true"
-        app:layout_constraintTop_toBottomOf="@id/topBarLayout"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            tools:context=".ui.main.MyPickActivity">
 
-            <!-- Highlight Section (without play button) -->
-            <include
-                android:id="@+id/highlightSection"
-                layout="@layout/item_highlight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!-- Divider -->
-            <View
-                android:id="@+id/divider1"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginHorizontal="16dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@id/highlightSection" />
-
-            <!-- Player Comparison Section -->
+            <!-- Top bar -->
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/playerComparisonLayout"
+                android:id="@+id/topBarLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/divider1">
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="16dp"
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toTopOf="parent">
 
-                <!-- Left Player (Batter) -->
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/ivBatterImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Batter"
-                    app:layout_constraintTop_toTopOf="parent"
+                <ImageButton
+                    android:id="@+id/btnBack"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="Back"
+                    android:src="@drawable/ic_arrow_left"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvVersus"
-                    tools:src="@tools:sample/avatars" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:id="@+id/tvBatterName"
+                    android:id="@+id/tvMyPickTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="이재현"
+                    android:text="내 선택 비교"
                     android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/ivBatterImage"
-                    app:layout_constraintStart_toStartOf="@id/ivBatterImage"
-                    app:layout_constraintEnd_toEndOf="@id/ivBatterImage" />
-
-                <!-- VS Text -->
-                <TextView
-                    android:id="@+id/tvVersus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="VS"
                     android:textSize="24sp"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
-                    app:layout_constraintTop_toTopOf="@id/ivBatterImage"
-                    app:layout_constraintBottom_toBottomOf="@id/ivBatterImage"
-                    app:layout_constraintStart_toEndOf="@id/ivBatterImage"
-                    app:layout_constraintEnd_toStartOf="@id/ivPitcherImage" />
-
-                <!-- Right Player (Pitcher) -->
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/ivPitcherImage"
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:scaleType="centerCrop"
-                    android:contentDescription="Pitcher"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tvVersus"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    tools:src="@tools:sample/avatars" />
-
-                <TextView
-                    android:id="@+id/tvPitcherName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:gravity="center"
-                    android:text="류현진"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/ivPitcherImage"
-                    app:layout_constraintStart_toStartOf="@id/ivPitcherImage"
-                    app:layout_constraintEnd_toEndOf="@id/ivPitcherImage" />
-
-                <!-- 표 시작 -->
-
-                <!-- Row 1 -->
-                <TextView
-                    android:id="@+id/tvBattingAvg"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end|center_vertical"
-                    android:text="0.329"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginEnd="24dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvBatterName"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvBattingAvgLabel"
-                    android:layout_marginTop="16dp" />
-
-                <TextView
-                    android:id="@+id/tvBattingAvgLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-
-                    android:text="타율  ERA"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@id/tvBattingAvg"
-                    app:layout_constraintEnd_toStartOf="@id/tvERA"
-                    app:layout_constraintTop_toTopOf="@id/tvBattingAvg"
-                    app:layout_constraintBottom_toBottomOf="@id/tvBattingAvg" />
-
-                <TextView
-                    android:id="@+id/tvERA"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="3.02"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginStart="24dp"
-                    app:layout_constraintTop_toTopOf="@id/tvBattingAvg"
-                    app:layout_constraintStart_toEndOf="@id/tvBattingAvgLabel"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <!-- Row 2 -->
-                <TextView
-                    android:id="@+id/tvHits"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end|center_vertical"
-                    android:text="121"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginEnd="24dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvBattingAvg"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvHitsLabel"
-                    android:layout_marginTop="16dp" />
-
-                <TextView
-                    android:id="@+id/tvHitsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="안타  승패"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@id/tvHits"
-                    app:layout_constraintEnd_toStartOf="@id/tvWinLoss"
-                    app:layout_constraintTop_toTopOf="@id/tvHits"
-                    app:layout_constraintBottom_toBottomOf="@id/tvHits" />
-
-                <TextView
-                    android:id="@+id/tvWinLoss"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="3승 2패"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginStart="24dp"
-                    app:layout_constraintTop_toTopOf="@id/tvHits"
-                    app:layout_constraintStart_toEndOf="@id/tvHitsLabel"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <!-- Row 3 -->
-                <TextView
-                    android:id="@+id/tvHomeRuns"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end|center_vertical"
-                    android:text="21"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginEnd="24dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvHits"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvHomeRunsLabel"
-                    android:layout_marginTop="16dp" />
-
-                <TextView
-                    android:id="@+id/tvHomeRunsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="홈런  홀드"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintStart_toEndOf="@id/tvHomeRuns"
-                    app:layout_constraintEnd_toStartOf="@id/tvHolds"
-                    app:layout_constraintTop_toTopOf="@id/tvHomeRuns"
-                    app:layout_constraintBottom_toBottomOf="@id/tvHomeRuns" />
-
-                <TextView
-                    android:id="@+id/tvHolds"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="47"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginStart="24dp"
-                    app:layout_constraintTop_toTopOf="@id/tvHomeRuns"
-                    app:layout_constraintStart_toEndOf="@id/tvHomeRunsLabel"
-                    app:layout_constraintEnd_toEndOf="parent" />
-
-                <!-- Row 4 -->
-                <TextView
-                    android:id="@+id/tvRBIs"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="end|center_vertical"
-                    android:text="75"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintTop_toBottomOf="@id/tvHomeRuns"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvRBIsLabel"
-                    android:layout_marginTop="16dp" />
-
-                <TextView
-                    android:id="@+id/tvRBIsLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="타점  세이브"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@id/tvSaves"
-                    app:layout_constraintStart_toEndOf="@id/tvRBIs"
-                    app:layout_constraintTop_toTopOf="@id/tvRBIs" />
-
-                <TextView
-                    android:id="@+id/tvSaves"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="start|center_vertical"
-                    android:text="1"
-                    android:textColor="@color/black"
-                    android:textSize="18sp"
-                    android:layout_marginStart="18dp"
-                    app:layout_constraintTop_toTopOf="@id/tvRBIs"
-                    app:layout_constraintStart_toEndOf="@id/tvRBIsLabel"
-                    app:layout_constraintEnd_toEndOf="parent" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <!-- Second Divider -->
-            <View
-                android:id="@+id/divider2"
+            <ScrollView
+                android:id="@+id/svContent"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginHorizontal="16dp"
-                android:background="@android:color/darker_gray"
-                app:layout_constraintTop_toBottomOf="@id/playerComparisonLayout" />
+                android:layout_height="0dp"
+                android:fillViewport="true"
+                app:layout_constraintTop_toBottomOf="@id/topBarLayout"
+                app:layout_constraintBottom_toBottomOf="parent">
 
-            <!-- Start Button -->
-            <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/btnStart"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginHorizontal="64dp"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="32dp"
-                android:background="@drawable/rounded_navy_background"
-                android:text="시작"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@id/divider2"
-                app:layout_constraintStart_toStartOf="parent"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <!-- Highlight Section (without play button) -->
+                    <include
+                        android:id="@+id/highlightSection"
+                        layout="@layout/item_highlight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- Divider -->
+                    <View
+                        android:id="@+id/divider1"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:background="@android:color/darker_gray"
+                        app:layout_constraintTop_toBottomOf="@id/highlightSection" />
+
+                    <!-- Player Comparison Section -->
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/playerComparisonLayout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        app:layout_constraintTop_toBottomOf="@id/divider1">
+
+                        <!-- Left Player (Batter) -->
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivBatterImage"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Batter"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvVersus"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/tvBatterName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="이재현"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toBottomOf="@id/ivBatterImage"
+                            app:layout_constraintStart_toStartOf="@id/ivBatterImage"
+                            app:layout_constraintEnd_toEndOf="@id/ivBatterImage" />
+
+                        <!-- VS Text -->
+                        <TextView
+                            android:id="@+id/tvVersus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="VS"
+                            android:textSize="24sp"
+                            android:textStyle="bold"
+                            android:textColor="@color/black"
+                            app:layout_constraintTop_toTopOf="@id/ivBatterImage"
+                            app:layout_constraintBottom_toBottomOf="@id/ivBatterImage"
+                            app:layout_constraintStart_toEndOf="@id/ivBatterImage"
+                            app:layout_constraintEnd_toStartOf="@id/ivPitcherImage" />
+
+                        <!-- Right Player (Pitcher) -->
+                        <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/ivPitcherImage"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:scaleType="centerCrop"
+                            android:contentDescription="Pitcher"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/tvVersus"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            tools:src="@tools:sample/avatars" />
+
+                        <TextView
+                            android:id="@+id/tvPitcherName"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:text="류현진"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintTop_toBottomOf="@id/ivPitcherImage"
+                            app:layout_constraintStart_toStartOf="@id/ivPitcherImage"
+                            app:layout_constraintEnd_toEndOf="@id/ivPitcherImage" />
+
+                        <!-- 표 시작 -->
+
+                        <!-- Row 1 -->
+                        <TextView
+                            android:id="@+id/tvBattingAvg"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="end|center_vertical"
+                            android:text="0.329"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginEnd="24dp"
+                            app:layout_constraintTop_toBottomOf="@id/tvBatterName"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvBattingAvgLabel"
+                            android:layout_marginTop="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvBattingAvgLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+
+                            android:text="타율  ERA"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toEndOf="@id/tvBattingAvg"
+                            app:layout_constraintEnd_toStartOf="@id/tvERA"
+                            app:layout_constraintTop_toTopOf="@id/tvBattingAvg"
+                            app:layout_constraintBottom_toBottomOf="@id/tvBattingAvg" />
+
+                        <TextView
+                            android:id="@+id/tvERA"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="start|center_vertical"
+                            android:text="3.02"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginStart="24dp"
+                            app:layout_constraintTop_toTopOf="@id/tvBattingAvg"
+                            app:layout_constraintStart_toEndOf="@id/tvBattingAvgLabel"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <!-- Row 2 -->
+                        <TextView
+                            android:id="@+id/tvHits"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="end|center_vertical"
+                            android:text="121"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginEnd="24dp"
+                            app:layout_constraintTop_toBottomOf="@id/tvBattingAvg"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvHitsLabel"
+                            android:layout_marginTop="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvHitsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="안타  승패"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toEndOf="@id/tvHits"
+                            app:layout_constraintEnd_toStartOf="@id/tvWinLoss"
+                            app:layout_constraintTop_toTopOf="@id/tvHits"
+                            app:layout_constraintBottom_toBottomOf="@id/tvHits" />
+
+                        <TextView
+                            android:id="@+id/tvWinLoss"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="start|center_vertical"
+                            android:text="3승 2패"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginStart="24dp"
+                            app:layout_constraintTop_toTopOf="@id/tvHits"
+                            app:layout_constraintStart_toEndOf="@id/tvHitsLabel"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <!-- Row 3 -->
+                        <TextView
+                            android:id="@+id/tvHomeRuns"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="end|center_vertical"
+                            android:text="21"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginEnd="24dp"
+                            app:layout_constraintTop_toBottomOf="@id/tvHits"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvHomeRunsLabel"
+                            android:layout_marginTop="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvHomeRunsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="홈런  홀드"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            app:layout_constraintStart_toEndOf="@id/tvHomeRuns"
+                            app:layout_constraintEnd_toStartOf="@id/tvHolds"
+                            app:layout_constraintTop_toTopOf="@id/tvHomeRuns"
+                            app:layout_constraintBottom_toBottomOf="@id/tvHomeRuns" />
+
+                        <TextView
+                            android:id="@+id/tvHolds"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="start|center_vertical"
+                            android:text="47"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginStart="24dp"
+                            app:layout_constraintTop_toTopOf="@id/tvHomeRuns"
+                            app:layout_constraintStart_toEndOf="@id/tvHomeRunsLabel"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                        <!-- Row 4 -->
+                        <TextView
+                            android:id="@+id/tvRBIs"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="end|center_vertical"
+                            android:text="75"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginEnd="16dp"
+                            app:layout_constraintTop_toBottomOf="@id/tvHomeRuns"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvRBIsLabel"
+                            android:layout_marginTop="16dp" />
+
+                        <TextView
+                            android:id="@+id/tvRBIsLabel"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="타점  세이브"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toStartOf="@id/tvSaves"
+                            app:layout_constraintStart_toEndOf="@id/tvRBIs"
+                            app:layout_constraintTop_toTopOf="@id/tvRBIs" />
+
+                        <TextView
+                            android:id="@+id/tvSaves"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="start|center_vertical"
+                            android:text="1"
+                            android:textColor="@color/black"
+                            android:textSize="18sp"
+                            android:layout_marginStart="18dp"
+                            app:layout_constraintTop_toTopOf="@id/tvRBIs"
+                            app:layout_constraintStart_toEndOf="@id/tvRBIsLabel"
+                            app:layout_constraintEnd_toEndOf="parent" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    <!-- Second Divider -->
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:background="@android:color/darker_gray"
+                        app:layout_constraintTop_toBottomOf="@id/playerComparisonLayout" />
+
+                    <!-- Start Button -->
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnStart"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="64dp"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginBottom="32dp"
+                        android:background="@drawable/rounded_navy_background"
+                        android:text="시작"
+                        android:textColor="@color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        app:layout_constraintTop_toBottomOf="@id/divider2"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </ScrollView>
+
+            <!-- 로딩 오버레이 (처음에는 안 보이도록) -->
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/loadingOverlay"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#80000000"
+                android:clickable="true"
+                android:focusable="true"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintBottom_toBottomOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.cardview.widget.CardView
+                    android:layout_width="300dp"
+                    android:layout_height="wrap_content"
+                    app:cardCornerRadius="12dp"
+                    app:cardElevation="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="24dp">
+
+                        <TextView
+                            android:id="@+id/tvLoadingTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="경기 결과를 분석하고 있습니다..."
+                            android:textColor="@color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            style="?android:attr/progressBarStyleHorizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:max="100"
+                            android:progress="0"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tvLoadingTitle" />
+
+                        <TextView
+                            android:id="@+id/tvLoadingMessage"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:text="데이터 로딩 중..."
+                            android:textColor="@color/black"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/progressBar" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
-
-</androidx.constraintlayout.widget.ConstraintLayout>

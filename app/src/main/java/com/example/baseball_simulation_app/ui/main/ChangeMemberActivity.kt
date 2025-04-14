@@ -531,6 +531,9 @@ class ChangeMemberActivity : AppCompatActivity() {
 
     // Intent Extra 키 정의
     companion object {
+        const val EXTRA_STADIUM = "EXTRA_STADIUM"
+        const val EXTRA_HOME_TEAM_LOGO = "EXTRA_HOME_TEAM_LOGO"
+        const val EXTRA_AWAY_TEAM_LOGO = "EXTRA_AWAY_TEAM_LOGO"
         const val EXTRA_IS_HOME_TEAM = "extra_is_home_team"
         const val EXTRA_GAME_ID = "extra_game_id"
         const val EXTRA_HOME_TEAM_ID = "extra_home_team_id" // 팀 ID (필요시 사용)

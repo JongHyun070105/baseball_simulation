@@ -1,6 +1,5 @@
 package com.example.baseball_simulation_app.ui.main
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.baseball_simulation_app.R
